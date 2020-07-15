@@ -49,6 +49,7 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 		if (!_isDragging)
 		{
 			Debug.LogFormat("[{0}] Pointer Click", this.name);
+			InputController.Instance.Tap(eventData.position);
 		}
 	}
 
