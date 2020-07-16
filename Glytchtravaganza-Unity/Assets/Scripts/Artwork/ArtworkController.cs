@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ArtworkController
@@ -19,6 +20,12 @@ public class ArtworkController
 	}
 
 	private ArtworkManager _artworkManager;
+	private ArtworkData _artworkData;
+
+	public void Init()
+	{
+		_artworkData = Resources.LoadAll<ArtworkData>("").FirstOrDefault();
+	}
 
 	public void RegisterManager(ArtworkManager manager)
 	{
@@ -27,7 +34,7 @@ public class ArtworkController
 
 	public void ArtworkSelected(ArtworkClickable artworkClickable)
 	{
-		_artworkManager.ArtworkSelected(artworkClickable);
+		_artworkManager.ArtworkSelected(_artworkData.Get(artworkClickable.Key));
 	}
 
 	public void ArtworkClosed()

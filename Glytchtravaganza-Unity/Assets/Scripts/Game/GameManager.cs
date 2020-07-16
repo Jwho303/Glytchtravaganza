@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         GameController.Instance.RegisterManager(this);
-        GameController.Instance.Init();       
+        GameController.Instance.Init();
+        ArtworkController.Instance.Init();
     }
 
     // Update is called once per frame

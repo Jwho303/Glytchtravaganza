@@ -21,6 +21,7 @@ public class DebugManager : MonoBehaviour
 	{
 
 		debugEntries.Add(new DebugLabel("Frame Rate", () => { return Mathf.RoundToInt(1f / Time.deltaTime).ToString(); }));
+		debugEntries.Add(new DebugLabel("Screen",String.Format("Width {0} | Height {1} | DPI {2}", Screen.width, Screen.height, Screen.dpi)));
 		debugEntries.Add(new DebugLabel("Platform", () => { return Application.platform.ToString(); }));
 
 	}
