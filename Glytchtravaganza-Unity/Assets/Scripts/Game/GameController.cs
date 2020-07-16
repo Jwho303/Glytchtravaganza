@@ -32,7 +32,7 @@ public class GameController
 
 	private void Hit(GameObject gameObject)
 	{
-		Debug.Log("Hit :" + gameObject.name);
+		Debug.Log("Hit : " + gameObject.name);
 		if (HasComponent<ArtworkClickable>(gameObject))
 		{
 			ArtworkController.Instance.ArtworkSelected(gameObject.GetComponent<ArtworkClickable>());

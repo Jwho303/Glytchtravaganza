@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: ArtworkData
   m_EditorClassIdentifier: 
   Artworks:
-  - Key: 1
+  - Key: Test
+    SlideCount: 5

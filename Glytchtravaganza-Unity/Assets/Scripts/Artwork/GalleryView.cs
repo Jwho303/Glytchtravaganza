@@ -4,5 +4,11 @@ using UnityEngine;
 
 public class GalleryView : MonoBehaviour
 {
-
+	public RectTransform RectTransform
+	{
+		get
+		{
+			return this.GetComponent<RectTransform>();
+		}
+	}
 }
