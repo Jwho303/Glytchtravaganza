@@ -1337,8 +1337,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1905640787, guid: 5b0f888a0cfd2334094c7013313cf88e, type: 3}
-      propertyPath: m_BlocksRaycasts
+    - target: {fileID: 787837918, guid: 5b0f888a0cfd2334094c7013313cf88e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2061350568, guid: 5b0f888a0cfd2334094c7013313cf88e, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5095020598451778071, guid: 5b0f888a0cfd2334094c7013313cf88e,
@@ -1394,6 +1398,11 @@ PrefabInstance:
     - target: {fileID: 5095020598451778071, guid: 5b0f888a0cfd2334094c7013313cf88e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031004531114025982, guid: 5b0f888a0cfd2334094c7013313cf88e,
+        type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8687176794960180142, guid: 5b0f888a0cfd2334094c7013313cf88e,
@@ -1489,11 +1498,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7723229212826157068, guid: 069c55161f1b10b4a8959ac71245f28f,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 195.29999
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 069c55161f1b10b4a8959ac71245f28f, type: 3}

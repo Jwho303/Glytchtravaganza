@@ -28,6 +28,18 @@ public class GameController
 	internal void Init()
 	{
 		InputController.Instance.SubscribeToGameObjectHit(Hit);
+		ArtworkController.Instance.SubscribeToOpenGallery(GalleryOpen);
+		ArtworkController.Instance.SubscribeToCloseGallery(GalleryClose);
+	}
+
+	private void GalleryClose()
+	{
+
+	}
+
+	private void GalleryOpen(Artwork obj)
+	{
+
 	}
 
 	private void Hit(GameObject gameObject)

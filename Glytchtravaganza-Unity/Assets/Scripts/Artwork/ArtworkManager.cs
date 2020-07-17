@@ -14,6 +14,9 @@ public class ArtworkManager : MonoBehaviour
 	[SerializeField]
 	private List<GalleryView> _galleryItems = new List<GalleryView>();
 
+	[SerializeField]
+	private CanvasGroup _canvasGroup;
+
 	private Vector2 _offscreenRight
 	{
 		get
@@ -32,12 +35,18 @@ public class ArtworkManager : MonoBehaviour
 	void Start()
 	{
 		ArtworkController.Instance.RegisterManager(this);
+		_canvasGroup.alpha = 0f;
+		_canvasGroup.interactable = false;
+		_canvasGroup.blocksRaycasts = false;
 	}
 
 	internal void ArtworkSelected(Artwork artwork)
 	{
 		Debug.Log(artwork.Key);
 		BuildGallery(artwork);
+		_canvasGroup.alpha = 1f;
+		_canvasGroup.interactable = true;
+		_canvasGroup.blocksRaycasts = true;
 	}
 
 	internal void BuildGallery(Artwork artwork)
@@ -80,6 +89,14 @@ public class ArtworkManager : MonoBehaviour
 	{
 		_galleryIndex = (_galleryIndex > 0) ? _galleryIndex - 1 : (_galleryItems.Count - 1);
 		SetGalleryPosition(_galleryIndex);
+	}
+
+	public void CloseGallery()
+	{
+		ArtworkController.Instance.ArtworkClosed();
+		_canvasGroup.alpha = 0f;
+		_canvasGroup.interactable = false;
+		_canvasGroup.blocksRaycasts = false;
 	}
 
 	private GalleryView CreateView(Artwork artwork)

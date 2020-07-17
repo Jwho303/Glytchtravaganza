@@ -14,6 +14,31 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 	public Vector2 _magnitude = Vector2.zero;
 	private float _maxMagnitude = 50f;
 
+	[SerializeField]
+	private CanvasGroup _canvasGroup;
+
+	private void Start()
+	{
+		ArtworkController.Instance.SubscribeToOpenGallery(GalleryOpen);
+		ArtworkController.Instance.SubscribeToCloseGallery(GalleryClose);
+
+		GalleryClose();
+	}
+
+	private void GalleryClose()
+	{
+		_canvasGroup.alpha = 1f;
+		_canvasGroup.interactable = true;
+		_canvasGroup.blocksRaycasts = true;
+	}
+
+	private void GalleryOpen(Artwork artwork)
+	{
+		_canvasGroup.alpha = 0f;
+		_canvasGroup.interactable = false;
+		_canvasGroup.blocksRaycasts = false;
+	}
+
 	public void LateUpdate()
 	{
 		if (_isDragging || _keyDown)

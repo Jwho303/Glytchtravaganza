@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -22,6 +23,10 @@ public class ArtworkController
 	private ArtworkManager _artworkManager;
 	private ArtworkData _artworkData;
 
+	private Action<Artwork> _galleryOpenSubscription = delegate { };
+	private Action _galleryClosedSubscription = delegate { };
+
+
 	public void Init()
 	{
 		_artworkData = Resources.LoadAll<ArtworkData>("").FirstOrDefault();
@@ -32,14 +37,25 @@ public class ArtworkController
 		_artworkManager = manager;
 	}
 
+	public void SubscribeToOpenGallery(Action<Artwork> action)
+	{
+		_galleryOpenSubscription += action;
+	}
+
+	public void SubscribeToCloseGallery(Action action)
+	{
+		_galleryClosedSubscription += action;
+	}
+
 	public void ArtworkSelected(ArtworkClickable artworkClickable)
 	{
 		_artworkManager.ArtworkSelected(_artworkData.Get(artworkClickable.Key));
+		_galleryOpenSubscription(_artworkData.Get(artworkClickable.Key));
 	}
 
 	public void ArtworkClosed()
 	{
-		
+		_galleryClosedSubscription();
 	}
 
 }
