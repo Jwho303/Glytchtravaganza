@@ -8,7 +8,7 @@ public class ArtworkManager : MonoBehaviour
 	[SerializeField]
 	private RectTransform _galleryContainer;
 	[SerializeField]
-	private GalleryView _galleryPrefab;
+	private GalleryView _galleryContentPrefab;
 	[SerializeField]
 	private int _galleryIndex = 0;
 	[SerializeField]
@@ -21,14 +21,14 @@ public class ArtworkManager : MonoBehaviour
 	{
 		get
 		{
-			return new Vector2(Screen.currentResolution.width / 2f + UIHelper.MinimumDisplayLength / 2f, 0f);
+			return UIHelper.FarOffScreen;//new Vector2(Screen.currentResolution.width / 2f + UIHelper.MinimumDisplayLength / 2f, 0f);
 		}
 	}
 	private Vector2 _offscreenLeft
 	{
 		get
 		{
-			return new Vector2(-_offscreenRight.x, 0f);
+			return UIHelper.FarOffScreen; //new Vector2(-_offscreenRight.x, 0f);
 		}
 	}
 	// Start is called before the first frame update
@@ -52,9 +52,9 @@ public class ArtworkManager : MonoBehaviour
 	internal void BuildGallery(Artwork artwork)
 	{
 		ClearGallery();
-		for (int i = 0; i < artwork.SlideCount; i++)
+		for (int i = 0; i < artwork.ArtContents.Count; i++)
 		{
-			_galleryItems.Add(CreateView(artwork));
+			_galleryItems.Add(CreateView(artwork.ArtContents[i]));
 		}
 		SetGalleryPosition(_galleryIndex);
 	}
@@ -99,9 +99,10 @@ public class ArtworkManager : MonoBehaviour
 		_canvasGroup.blocksRaycasts = false;
 	}
 
-	private GalleryView CreateView(Artwork artwork)
+	private GalleryView CreateView(ArtContent content)
 	{
-		GalleryView galleryView = Instantiate(_galleryPrefab, _galleryContainer.transform);
+		GalleryView galleryView = Instantiate(_galleryContentPrefab, _galleryContainer.transform);
+		galleryView.SetContent(content);
 		return galleryView;
 	}
 

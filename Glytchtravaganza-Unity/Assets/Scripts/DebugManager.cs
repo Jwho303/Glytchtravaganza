@@ -6,11 +6,12 @@ using UnityEngine;
 public class DebugManager : MonoBehaviour
 {
 	GUIStyle debugStyle;
+	private bool _showDebug = false;
 	private List<DebugEntry> debugEntries = new List<DebugEntry>();
 	public void Awake()
 	{
 		debugStyle = new GUIStyle();
-		debugStyle.fontSize = 40;
+		debugStyle.fontSize = 30;
 		debugStyle.fontStyle = FontStyle.Bold;
 		debugStyle.normal.textColor = Color.white;
 		BuildDebugMenu();
@@ -29,9 +30,17 @@ public class DebugManager : MonoBehaviour
 	public void OnGUI()
 	{
 		GUILayout.BeginVertical();
-		foreach (var entry in debugEntries)
+		if (GUILayout.Button("Debug"))
 		{
-			entry.Draw(debugStyle);
+			_showDebug = !_showDebug;
+		}
+
+		if (_showDebug)
+		{
+			foreach (var entry in debugEntries)
+			{
+				entry.Draw(debugStyle);
+			}
 		}
 		GUILayout.EndVertical();
 	}

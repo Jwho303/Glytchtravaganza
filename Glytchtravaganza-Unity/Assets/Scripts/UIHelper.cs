@@ -33,4 +33,12 @@ public static class UIHelper
 			}
 		}
 	}
+
+	public static Vector2 FarOffScreen
+	{
+		get
+		{
+			return new Vector2(9999, 9999);
+		}
+	}
 }
