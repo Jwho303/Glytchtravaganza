@@ -5,24 +5,35 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
+using System.Linq;
 using UnityEditor.Formats.Fbx.Exporter;
+using System.Runtime.CompilerServices;
+
 public static class ArtworkBuilder
 {
+    private static Vector3 position;
+
 	[MenuItem("Assets / Create / Build Artwork Object", priority = 0)]
 	public static void Test()
 	{
 		if (Selection.activeObject is Texture)
 		{
 			Texture tex = Selection.activeObject as Texture;
-			Debug.LogError(string.Format("Texture Selected!!! {0} x {1}", (tex.width), (tex.height)));
+			
 
-			if (HasPath(Path.Combine(Application.dataPath, "Artwork/Models")))
+			if (HasPath(Path.Combine(Application.dataPath, "Prefabs/Artwork")))
 			{
-				string path = (Path.Combine(Application.dataPath, "Artwork/Models", tex.name +".fbx"));
-                GameObject mesh = BuildPaintingObject((tex.width), (tex.height));
-				ModelExporter.ExportObject(path, mesh);
+                AssetDatabase.Refresh();
+                string path = (Path.Combine(Application.dataPath, "Prefabs/Artwork", tex.name +".prefab"));
+                GameObject go = BuildPaintingObject(tex);
+               // ModelExporter.ExportObject(path, go);
+
+               // path = AssetDatabase.GenerateUniqueAssetPath(path);
+
+               // PrefabUtility.SaveAsPrefabAssetAndConnect(go, path, InteractionMode.UserAction);
 				AssetDatabase.Refresh();
-			}
+                Debug.LogFormat("[ArtworkBuilder] Asset created: {0}", tex.name);
+            }
 		}
 		else
 		{
@@ -31,11 +42,13 @@ public static class ArtworkBuilder
 
 	}
 
-	private static GameObject BuildPaintingObject(int width, int height)
+	private static GameObject BuildPaintingObject(Texture tex)
 	{
-        GameObject gameObject = new GameObject();
+        GameObject gameObject = new GameObject(tex.name);
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        meshRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
+        Material mat = new Material(Shader.Find("Standard"));
+        mat.mainTexture = tex;
+        meshRenderer.sharedMaterial = mat;
 
         MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
 
@@ -44,9 +57,9 @@ public static class ArtworkBuilder
         Vector3[] vertices = new Vector3[4]
         {
             new Vector3(0, 0, 0),
-            new Vector3(width/1000f, 0, 0),
-            new Vector3(0, height/1000f, 0),
-            new Vector3(width/1000f, height/1000f, 0)
+            new Vector3(tex.width/1000f, 0, 0),
+            new Vector3(0, tex.height/1000f, 0),
+            new Vector3(tex.width/1000f, tex.height/1000f, 0)
         };
         mesh.vertices = vertices;
 
@@ -79,6 +92,14 @@ public static class ArtworkBuilder
 
         meshFilter.mesh = mesh;
 
+        BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+        collider.size = new Vector3(collider.size.x, collider.size.y, collider.size.x/10f);
+        ArtworkClickable artworkClickable = gameObject.AddComponent<ArtworkClickable>();
+        artworkClickable.Key = tex.name;
+
+        ArtworkData artworkData = Resources.LoadAll<ArtworkData>("").FirstOrDefault();
+        artworkData.AddArtwork(tex.name);
+       
         return gameObject;
     }
 

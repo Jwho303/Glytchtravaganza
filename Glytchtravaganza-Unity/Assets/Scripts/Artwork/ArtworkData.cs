@@ -23,16 +23,37 @@ public class ArtworkData : ScriptableObject
 		Debug.LogErrorFormat("[{0}] Could not find artwork with key {1}", this.name, key);
 		return null;
 	}
-
+#if UNITY_EDITOR
 	internal void NewArtwork()
 	{
 		Artworks.Add(Artwork.MakeDefault());
+		SaveData();
 	}
+
+	public void AddArtwork(string key)
+	{
+		if (Get(key) == null)
+		{
+			Artworks.Add(new Artwork(key));
+			Debug.LogFormat("[{0}] Adding new artwork with key {1}", this.name, key);
+			SaveData();
+		}
+	}
+
 
 	internal void RemoveArtwork(int index)
 	{
 		Artworks.RemoveAt(index);
+		SaveData();
 	}
+
+	private void SaveData()
+	{
+		EditorUtility.SetDirty(this);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
+	}
+#endif
 }
 
 [System.Serializable]
@@ -53,6 +74,11 @@ public class Artwork
 
 	public Artwork()
 	{
+	}
+
+	public Artwork(string key)
+	{
+		Key = key;
 	}
 
 	public static Artwork MakeDefault()

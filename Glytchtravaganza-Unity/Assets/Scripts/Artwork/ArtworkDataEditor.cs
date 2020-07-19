@@ -26,10 +26,21 @@ public class ArtworkDataEditor : Editor
 			DrawArtwork(data.Artworks[_viewIndex]);
 		}
 		EditorGUILayout.EndVertical();
+
+		serializedObject.ApplyModifiedProperties();
+	}
+
+	private void OnDisable()
+	{
+		serializedObject.ApplyModifiedProperties();
+		EditorUtility.SetDirty(data);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
 	}
 
 	private void OnValidate()
 	{
+		serializedObject.ApplyModifiedProperties();
 		EditorUtility.SetDirty(data);
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
