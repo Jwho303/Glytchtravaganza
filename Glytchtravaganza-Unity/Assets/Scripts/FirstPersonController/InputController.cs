@@ -21,8 +21,10 @@ public class InputController
 
 	private Action<float, float> _translateSubscription = delegate { };
 	private Action<float, float> _rotationSubscription = delegate { };
+	private Action<Vector2> _tapSubscription = delegate { };
+	private Action<GameObject> _gameObjectHitSubscription = delegate { };
 
-	public void SubscribeToTranslate (Action<float, float> action)
+	public void SubscribeToTranslate(Action<float, float> action)
 	{
 		_translateSubscription += action;
 	}
@@ -30,6 +32,15 @@ public class InputController
 	public void SubscribeToRotation(Action<float, float> action)
 	{
 		_rotationSubscription += action;
+	}
+	public void SubscribeToTap(Action<Vector2> action)
+	{
+		_tapSubscription += action;
+	}
+
+	public void SubscribeToGameObjectHit(Action<GameObject> action)
+	{
+		_gameObjectHitSubscription += action;
 	}
 
 	public void Translate(float direction, float magnitude)
@@ -39,6 +50,16 @@ public class InputController
 	public void Rotate(float direction, float magnitude)
 	{
 		_rotationSubscription(direction, magnitude);
+	}
+
+	public void Tap(Vector2 position)
+	{
+		_tapSubscription(position);
+	}
+
+	public void Hit(GameObject gameObject)
+	{
+		_gameObjectHitSubscription(gameObject);
 	}
 
 }
