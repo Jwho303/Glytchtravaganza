@@ -210,4 +210,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _translationSpeed: 30
   _rotationSpeed: 8
+  _viewCamera: {fileID: 2478924672811073861}
   rigidbody: {fileID: 2478924673710897088}
