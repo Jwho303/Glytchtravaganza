@@ -10,7 +10,7 @@ public class GalleryView : MonoBehaviour
 	private RawImage _image;
 
 	[SerializeField]
-	private TextMeshProUGUI _text;
+	public TextMeshProUGUI _text;
 
 	public RectTransform RectTransform
 	{

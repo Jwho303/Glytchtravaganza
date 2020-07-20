@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.EventSystems;
 
-public class ArtworkManager : MonoBehaviour
+public class ArtworkManager : MonoBehaviour, IPointerClickHandler
 {
 	[SerializeField]
 	private RectTransform _galleryContainer;
@@ -13,6 +15,8 @@ public class ArtworkManager : MonoBehaviour
 	private int _galleryIndex = 0;
 	[SerializeField]
 	private List<GalleryView> _galleryItems = new List<GalleryView>();
+	[SerializeField]
+	private Camera _artworkCamera;
 
 	[SerializeField]
 	private CanvasGroup _canvasGroup;
@@ -97,6 +101,7 @@ public class ArtworkManager : MonoBehaviour
 		_canvasGroup.alpha = 0f;
 		_canvasGroup.interactable = false;
 		_canvasGroup.blocksRaycasts = false;
+		ClearGallery();
 	}
 
 	private GalleryView CreateView(ArtContent content)
@@ -114,5 +119,20 @@ public class ArtworkManager : MonoBehaviour
 		}
 		_galleryIndex = 0;
 		_galleryItems.Clear();
+	}
+
+	public void OnPointerClick(PointerEventData eventData)
+	{
+		if (_galleryItems.Count > 0)
+		{
+			int linkIndex = TMP_TextUtilities.FindIntersectingLink(_galleryItems[_galleryIndex]._text, Input.mousePosition, _artworkCamera);
+			if (linkIndex != -1)
+			{ // was a link clicked?
+				TMP_LinkInfo linkInfo = _galleryItems[_galleryIndex]._text.textInfo.linkInfo[linkIndex];
+
+				// open the link id as a url, which is the metadata we added in the text field
+				Application.OpenURL(linkInfo.GetLinkID());
+			}
+		}
 	}
 }

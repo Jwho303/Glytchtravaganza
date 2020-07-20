@@ -862,4 +862,5 @@ MonoBehaviour:
     type: 3}
   _galleryIndex: 0
   _galleryItems: []
+  _artworkCamera: {fileID: 5835791453124010003}
   _canvasGroup: {fileID: 8169694544682877891}

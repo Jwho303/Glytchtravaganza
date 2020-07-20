@@ -264,6 +264,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2478924673710897101, guid: a47edcfa5d0065d488e304c8135eefb9,
+        type: 3}
+      propertyPath: _translationSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2478924673710897101, guid: a47edcfa5d0065d488e304c8135eefb9,
+        type: 3}
+      propertyPath: _rotationSpeed
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a47edcfa5d0065d488e304c8135eefb9, type: 3}
 --- !u!43 &624955392
@@ -857,13 +867,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1750666054}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.32, y: 3.41, z: 1.11}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 5.59, y: 3.41, z: -1.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1110085388}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &1750666056
 MonoBehaviour:
   m_ObjectHideFlags: 0

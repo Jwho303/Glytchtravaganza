@@ -41,12 +41,32 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	public void LateUpdate()
 	{
+		CheckKeyPresses();
+
 		if (_isDragging || _keyDown)
 		{
 			InputController.Instance.Translate(_direction.y, _magnitude.y);
 			InputController.Instance.Rotate(_direction.x, _magnitude.x);
 		}
 	}
+
+	private void CheckKeyPresses()
+	{
+		if (_keyDown && !Input.anyKey)
+		{
+			KeyUp();
+			Debug.LogFormat("[{0}] Key Up", this.name);
+		}
+
+		if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+		{
+			KeyDown();
+			Debug.LogFormat("[{0}] Key Down", this.name);
+			_direction = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+			_magnitude = Vector2.one;
+		}
+	}
+
 	public void OnBeginDrag(PointerEventData eventData)
 	{
 		Debug.LogFormat("[{0}] Begin Dragging", this.name);
@@ -121,7 +141,6 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 	private void KeyDown()
 	{
 		_keyDown = true;
-		ClearData();
 	}
 	public void KeyUp()
 	{
