@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class GameObjectGlitch : MonoBehaviour
 {
-    private MeshFilter _meshFilter;
-    public MeshFilter MeshFilter
+	private MeshFilter _meshFilter;
+	public MeshFilter MeshFilter
 	{
-        get
+		get
 		{
-            if (_meshFilter == null)
+			if (_meshFilter == null)
 			{
-                _meshFilter = GetComponent<MeshFilter>();
+				_meshFilter = GetComponent<MeshFilter>();
 			}
-            return _meshFilter;
+			return _meshFilter;
 		}
 	}
-    private Mesh _baseMesh;
+	private Mesh _baseMesh;
 	private bool _isGLitched = false;
-    // Start is called before the first frame update
-    void Awake()
-    {
-        _baseMesh = MeshFilter.mesh;
-    }
+	// Start is called before the first frame update
+	void Awake()
+	{
+		_baseMesh = MeshFilter.mesh;
+	}
 
-    public void ReverseNormals()
+	public void ReverseNormals()
 	{
 		if (_isGLitched)
 		{
@@ -53,7 +53,39 @@ public class GameObjectGlitch : MonoBehaviour
 		_isGLitched = true;
 	}
 
-    public void ResetMesh()
+	public void RandomizeVerts()
+	{
+		if (_isGLitched)
+		{
+			return;
+		}
+
+		Mesh mesh = MeshFilter.mesh;
+		Vector3[] verts = mesh.vertices;
+		Dictionary<Vector3, List<int>> dictionary = new Dictionary<Vector3, List<int>>();
+		for (int x = 0; x < verts.Length; x++)
+		{
+			if (!dictionary.ContainsKey(verts[x]))
+			{
+				dictionary.Add(verts[x], new List<int>());
+			}
+			dictionary[verts[x]].Add(x);
+		}
+		foreach (KeyValuePair<Vector3, List<int>> pair in dictionary)
+		{
+			Vector3 newPos = pair.Key * Random.Range(0.9f, 1.1f);
+			foreach (int i in pair.Value)
+			{
+				verts[i] = newPos;
+			}
+		}
+
+		mesh.SetVertices(verts);
+
+		_isGLitched = true;
+	}
+
+	public void ResetMesh()
 	{
 		if (!_isGLitched)
 		{
@@ -61,6 +93,7 @@ public class GameObjectGlitch : MonoBehaviour
 		}
 
 		MeshFilter.mesh = _baseMesh;
+		MeshFilter.sharedMesh = _baseMesh;
 		_isGLitched = false;
 	}
 }

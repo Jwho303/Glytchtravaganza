@@ -21,6 +21,8 @@ public class GlitchManager : MonoBehaviour
 	private Action<float> _digitalGlitch;
 	private Action<float> _analogueGlitch;
 	private Action<float> _normalsGlitch;
+	private Action<float> _vertexGlitch;
+	private Action<float> _resetAction;
 
 	private Coroutine _glitchCoroutine;
 
@@ -45,7 +47,6 @@ public class GlitchManager : MonoBehaviour
 		_normalsGlitch = (value) =>
 		{
 			int index = Mathf.RoundToInt(Mathf.Lerp(-1f, ((float)_glitchObjects.Count - 1), value));
-			Debug.Log(index);
 			if (index >= 0)
 			{
 				for (int i = 0; i < _glitchObjects.Count; i++)
@@ -68,6 +69,41 @@ public class GlitchManager : MonoBehaviour
 				}
 			}
 		};
+
+		_vertexGlitch = (value) =>
+		{
+			int index = Mathf.RoundToInt(Mathf.Lerp(-1f, ((float)_glitchObjects.Count - 1), value));
+			if (index >= 0)
+			{
+				for (int i = 0; i < _glitchObjects.Count; i++)
+				{
+					if (i == index)
+					{
+						_glitchObjects[i].RandomizeVerts();
+					}
+					else
+					{
+						_glitchObjects[i].ResetMesh();
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < _glitchObjects.Count; i++)
+				{
+					_glitchObjects[i].ResetMesh();
+				}
+			}
+		};
+
+		_resetAction = (value) =>
+		{
+			Debug.Log("RESET!");
+			for (int i = 0; i < _glitchObjects.Count; i++)
+			{
+				_glitchObjects[i].ResetMesh();
+			}
+		};
 	}
 
 
@@ -83,7 +119,7 @@ public class GlitchManager : MonoBehaviour
 	{
 		_lastGlitch = Time.unscaledTime;
 
-		int _randomGlitch = (UnityEngine.Random.Range(0, 3));
+		int _randomGlitch = (UnityEngine.Random.Range(0, 5));
 		IEnumerator selectedAction = null;
 
 		switch (_randomGlitch)
@@ -96,6 +132,12 @@ public class GlitchManager : MonoBehaviour
 				break;
 			case 2:
 				selectedAction = FadeGlitch(_normalsGlitch, _glitchDuration * 2f);
+				break;
+			case 3:
+				selectedAction = FadeGlitch(_vertexGlitch, _glitchDuration * 2f);
+				break;
+			case 4:
+				selectedAction = FadeGlitch(_resetAction, _glitchDuration * 2f);
 				break;
 
 		}
