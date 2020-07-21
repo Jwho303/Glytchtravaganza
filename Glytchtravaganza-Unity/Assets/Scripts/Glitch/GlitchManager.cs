@@ -1,42 +1,120 @@
-﻿using System.Collections;
+﻿using Kino;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GlitchManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-		MeshFilter[] meshfilters = FindObjectsOfType<MeshFilter>();
-		for (int i = 0; i < meshfilters.Length; i++)
-		{
-			ReverseNormals(meshfilters[i]);
-		}
-    }
+	private AnalogGlitch analogGlitch;
+	private DigitalGlitch digitalGlitch;
 
-    private void ReverseNormals(MeshFilter filter)
+	List<GameObjectGlitch> _glitchObjects = new List<GameObjectGlitch>();
+	private GameObjectGlitch RandomGlitchObject
+	{ get { return (_glitchObjects[UnityEngine.Random.Range(0, _glitchObjects.Count - 1)]); } }
+
+	private float _glitchFrequency = 2f;
+	private float _lastGlitch = 0f;
+	private float _glitchDuration = 0.3f;
+
+	private Action<float> _digitalGlitch;
+	private Action<float> _analogueGlitch;
+	private Action<float> _normalsGlitch;
+
+	private Coroutine _glitchCoroutine;
+
+	private void Awake()
 	{
-		if (filter != null)
+		analogGlitch = Camera.main.gameObject.AddComponent<AnalogGlitch>();
+		digitalGlitch = Camera.main.gameObject.AddComponent<DigitalGlitch>();
+
+		_digitalGlitch = (value) =>
 		{
-			Mesh mesh = filter.mesh;
+			digitalGlitch.intensity = Mathf.Lerp(0f, 0.25f, value);
+		};
 
-			Vector3[] normals = mesh.normals;
-			for (int i = 0; i < normals.Length; i++)
-				normals[i] = -normals[i];
-			mesh.normals = normals;
+		_analogueGlitch = (value) =>
+		{
+			analogGlitch.scanLineJitter = Mathf.Lerp(0f, 0.5f, value);
+			analogGlitch.colorDrift = Mathf.Lerp(0f, 0.5f, value);
+		};
 
-			for (int m = 0; m < mesh.subMeshCount; m++)
+		_glitchObjects = FindObjectsOfType<GameObjectGlitch>().ToList();
+
+		_normalsGlitch = (value) =>
+		{
+			int index = Mathf.RoundToInt(Mathf.Lerp(-1f, ((float)_glitchObjects.Count - 1), value));
+			Debug.Log(index);
+			if (index >= 0)
 			{
-				int[] triangles = mesh.GetTriangles(m);
-				for (int i = 0; i < triangles.Length; i += 3)
+				for (int i = 0; i < _glitchObjects.Count; i++)
 				{
-					int temp = triangles[i + 0];
-					triangles[i + 0] = triangles[i + 1];
-					triangles[i + 1] = temp;
+					if (i == index)
+					{
+						_glitchObjects[i].ReverseNormals();
+					}
+					else
+					{
+						_glitchObjects[i].ResetMesh();
+					}
 				}
-				mesh.SetTriangles(triangles, m);
 			}
+			else
+			{
+				for (int i = 0; i < _glitchObjects.Count; i++)
+				{
+					_glitchObjects[i].ResetMesh();
+				}
+			}
+		};
+	}
+
+
+	private void Update()
+	{
+		if (Time.unscaledTime >= (_lastGlitch + _glitchFrequency) && _glitchCoroutine == null)
+		{
+			RandomGlitch();
 		}
+	}
+
+	private void RandomGlitch()
+	{
+		_lastGlitch = Time.unscaledTime;
+
+		int _randomGlitch = (UnityEngine.Random.Range(0, 3));
+		IEnumerator selectedAction = null;
+
+		switch (_randomGlitch)
+		{
+			case 0:
+				selectedAction = FadeGlitch(_digitalGlitch, _glitchDuration);
+				break;
+			case 1:
+				selectedAction = FadeGlitch(_analogueGlitch, _glitchDuration);
+				break;
+			case 2:
+				selectedAction = FadeGlitch(_normalsGlitch, _glitchDuration * 2f);
+				break;
+
+		}
+
+		StartCoroutine(selectedAction);
+	}
+
+	private IEnumerator FadeGlitch(Action<float> glitchAction, float duration)
+	{
+		float startTime = Time.unscaledTime;
+		while (Time.unscaledTime <= startTime + duration)
+		{
+			float t = Mathf.Clamp01((Time.unscaledTime - startTime) / (duration));
+			glitchAction(1f - t);
+			yield return new WaitForEndOfFrame();
+		}
+
+		glitchAction(0f);
+		_glitchCoroutine = null;
 	}
 
 }
