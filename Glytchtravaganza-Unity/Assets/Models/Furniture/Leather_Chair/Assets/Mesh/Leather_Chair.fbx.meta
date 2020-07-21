@@ -1,14 +1,14 @@
 fileFormatVersion: 2
 guid: 3949219a8176387468bd856f5b6d2f98
 ModelImporter:
-  serializedVersion: 19300
+  serializedVersion: 19301
   internalIDToNameTable: []
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Leather_Chair
-    second: {fileID: 2100000, guid: bd5fdf2b3b93a0e4d99fee9b898d7e32, type: 2}
+    second: {fileID: 2100000, guid: 8586edd4f8b009741bdbfad6e1f0c052, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -36,7 +36,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages:
     - 0.25
@@ -52,6 +52,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
