@@ -3,10 +3,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 public class GlitchManager : MonoBehaviour
 {
+	public enum GlitchIntensity
+	{
+		None = 0,
+		Low = 5,
+		Medium = 10,
+		High = 20
+	}
+
 	[SerializeField]
 	private AnalogGlitch analogGlitch;
 	[SerializeField]
@@ -20,142 +29,69 @@ public class GlitchManager : MonoBehaviour
 	private bool _glitchOnTime = true;
 	private float _glitchFrequency = 2f;
 	private float _lastGlitch = 0f;
-	private float _glitchDuration = 0.3f;
+	private float _screenGlitchDuration = 0.3f;
+	private float _objectGlitchDuration = 10f;
 
-	private Action<float> _digitalGlitch;
-	private Action<float> _analogueGlitch;
-	private Action<float> _normalsGlitch;
-	private Action<float> _vertexGlitch;
-	private Action<float> _resetAction;
+	private Action<float> _digitalGlitch => (value) => DigitalScreenGlitch(value);
+	private Action<float> _analogueGlitch => (value) => AnalogueScreenGlitch(value);
+	private Action<float> _screenGlitch => (UnityEngine.Random.Range(0, 2) < 1) ? _digitalGlitch : _analogueGlitch;
 
 	private Coroutine _glitchCoroutine;
 
-
-
-	private void Awake()
+	private void DigitalScreenGlitch(float value)
 	{
-		_digitalGlitch = (value) =>
-		{
-			digitalGlitch.intensity = Mathf.Lerp(0f, 0.25f, value);
-		};
-
-		_analogueGlitch = (value) =>
-		{
-			analogGlitch.scanLineJitter = Mathf.Lerp(0f, 0.5f, value);
-			analogGlitch.colorDrift = Mathf.Lerp(0f, 0.5f, value);
-		};
-
-		_glitchObjects = FindObjectsOfType<GameObjectGlitch>().ToList();
-
-		_normalsGlitch = (value) =>
-		{
-			int index = Mathf.RoundToInt(Mathf.Lerp(-1f, ((float)_glitchObjects.Count - 1), value));
-			if (index >= 0)
-			{
-				for (int i = 0; i < _glitchObjects.Count; i++)
-				{
-					if (i == index)
-					{
-						_glitchObjects[i].ReverseNormals();
-					}
-					else
-					{
-						_glitchObjects[i].ResetMesh();
-					}
-				}
-			}
-			else
-			{
-				for (int i = 0; i < _glitchObjects.Count; i++)
-				{
-					_glitchObjects[i].ResetMesh();
-				}
-			}
-		};
-
-		_vertexGlitch = (value) =>
-		{
-			int index = Mathf.RoundToInt(Mathf.Lerp(-1f, ((float)_glitchObjects.Count - 1), value));
-			if (index >= 0)
-			{
-				for (int i = 0; i < _glitchObjects.Count; i++)
-				{
-					if (i == index)
-					{
-						_glitchObjects[i].RandomizeVerts();
-					}
-					else
-					{
-						_glitchObjects[i].ResetMesh();
-					}
-				}
-			}
-			else
-			{
-				for (int i = 0; i < _glitchObjects.Count; i++)
-				{
-					_glitchObjects[i].ResetMesh();
-				}
-			}
-		};
-
-		_resetAction = (value) =>
-		{
-			Debug.Log("RESET!");
-			for (int i = 0; i < _glitchObjects.Count; i++)
-			{
-				_glitchObjects[i].ResetMesh();
-			}
-		};
+		digitalGlitch.intensity = Mathf.Lerp(0f, 0.5f, value);
 	}
 
-
-	private void Update()
+	private void AnalogueScreenGlitch(float value)
 	{
-		if (Time.unscaledTime >= (_lastGlitch + _glitchFrequency) && _glitchCoroutine == null && _glitchOnTime)
-		{
-		//	RandomGlitch();
-		}
+		analogGlitch.scanLineJitter = Mathf.Lerp(0f, 0.75f, value);
+		analogGlitch.colorDrift = Mathf.Lerp(0f, 0.5f, value);
+	}
+
+	private void GlitchOutObject(GameObjectGlitch gameObjectGlitch)
+	{
+		gameObjectGlitch.IsGLitched = true;
+	}
+
+	private void ResetGlitchObject(GameObjectGlitch gameObjectGlitch)
+	{
+		gameObjectGlitch.IsGLitched = false;
 	}
 
 	[ContextMenu("Reset Glitch Objects")]
-	public void ResetGlitchObjects()
+	private void ResetAllGlitches()
 	{
 		for (int i = 0; i < _glitchObjects.Count; i++)
 		{
-			_glitchObjects[i].ResetMesh();
+			_glitchObjects[i].IsGLitched = false;
 		}
 	}
 
-	private void RandomGlitch()
+	private void Awake()
 	{
-		Debug.Log("Glitch!");
-		_lastGlitch = Time.unscaledTime;
+		GlitchController.Instance.RegisterManager(this);
+		_glitchObjects = FindObjectsOfType<GameObjectGlitch>().ToList();
+	}
 
-		int _randomGlitch = (UnityEngine.Random.Range(0, 4));
-		IEnumerator selectedAction = null;
+	public bool CanGlitch()
+	{
+		return Time.unscaledTime >= (_lastGlitch + _glitchFrequency) && _glitchCoroutine == null && _glitchOnTime;
+	}
 
-		switch (_randomGlitch)
+	private void Update()
+	{
+
+	}
+
+	public void RandomGlitch(GlitchIntensity glitchIntensity)
+	{
+		if (glitchIntensity != GlitchIntensity.None)
 		{
-			case 0:
-				selectedAction = FadeGlitch(_digitalGlitch, _glitchDuration);
-				break;
-			case 1:
-				selectedAction = FadeGlitch(_analogueGlitch, _glitchDuration);
-				break;
-			case 2:
-				selectedAction = FadeGlitch(_normalsGlitch, _glitchDuration * 2f);
-				break;
-			case 3:
-				selectedAction = FadeGlitch(_vertexGlitch, _glitchDuration * 2f);
-				break;
-			case 4:
-				//selectedAction = FadeGlitch(_resetAction, _glitchDuration * 2f);
-				break;
-
+			//Debug.Log("Glitch!");
+			_lastGlitch = Time.unscaledTime;
+			_glitchCoroutine = StartCoroutine(GlitchOut((int)glitchIntensity));
 		}
-
-		StartCoroutine(selectedAction);
 	}
 
 	private IEnumerator FadeGlitch(Action<float> glitchAction, float duration)
@@ -169,6 +105,35 @@ public class GlitchManager : MonoBehaviour
 		}
 
 		glitchAction(0f);
+	}
+
+	private IEnumerator GlitchOut(int glitchCount)
+	{
+
+		float startTime = Time.unscaledTime;
+		Action<float> screenGlitch = _screenGlitch;
+		StartCoroutine(FadeGlitch(screenGlitch, _screenGlitchDuration));
+		//Debug.Log("Start Co");
+		List<GameObjectGlitch> glitchObjects = new List<GameObjectGlitch>();
+
+		for (int i = 0; i < glitchCount; i++)
+		{
+			GameObjectGlitch gameObjectGlitch = RandomGlitchObject;
+			//Debug.Log(gameObjectGlitch.name);
+			GlitchOutObject(gameObjectGlitch);
+			glitchObjects.Add(gameObjectGlitch);
+		}
+
+		while (Time.unscaledTime <= startTime + _objectGlitchDuration)
+		{
+			yield return new WaitForEndOfFrame();
+		}
+
+		for (int i = 0; i < glitchObjects.Count; i++)
+		{
+			ResetGlitchObject(glitchObjects[i]);
+		}
+		//Debug.Log("End Co");
 		_glitchCoroutine = null;
 	}
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 
 public class GameObjectGlitch : MonoBehaviour
@@ -26,19 +27,40 @@ public class GameObjectGlitch : MonoBehaviour
 
 	private Mesh _baseMesh;
 	private bool _isGLitched = false;
+	public bool IsGLitched
+	{
+		get
+		{
+			return _isGLitched;
+		}
+		set
+		{
+			if (_isGLitched && value == false)
+			{
+				ResetMesh();
+			}
+
+			_isGLitched = value;
+		}
+	}
+	private float _timeSinceLastGlitch = 0f;
+	private float _glitchFrequence = 0.1f;
 	// Start is called before the first frame update
 	void Awake()
 	{
 		_baseMesh = CopyMesh(MeshFilter.mesh);
 	}
 
-	public void ReverseNormals()
+	private void Update()
 	{
-		if (_isGLitched)
+		if (IsGLitched)
 		{
-			return;
+			ContinuousGlitchOut();
 		}
+	}
 
+	private void ReverseNormals()
+	{
 		Mesh mesh = MeshFilter.mesh;
 
 		Vector3[] normals = mesh.normals;
@@ -57,17 +79,10 @@ public class GameObjectGlitch : MonoBehaviour
 			}
 			mesh.SetTriangles(triangles, m);
 		}
-
-		_isGLitched = true;
 	}
 
-	public void RandomizeVerts()
+	private void RandomizeVerts()
 	{
-		if (_isGLitched)
-		{
-			return;
-		}
-
 		Mesh mesh = MeshFilter.mesh;
 		Vector3[] verts = mesh.vertices;
 		Dictionary<Vector3, List<int>> dictionary = new Dictionary<Vector3, List<int>>();
@@ -89,20 +104,41 @@ public class GameObjectGlitch : MonoBehaviour
 		}
 
 		mesh.SetVertices(verts);
-
-		_isGLitched = true;
 	}
 
-	public void ResetMesh()
+	private void GlitchOut()
 	{
-		if (!_isGLitched)
-		{
-			return;
-		}
 
+		//if (this.Type == ObjectType.Furniture)
+		//{
+		if (Random.Range(0, 4) <= 2)
+		{
+			RandomizeVerts();
+		}
+		//}
+
+		//if (Random.Range(0, 2) <= 0)
+		//{
+		//	ReverseNormals();
+		//}
+
+		IsGLitched = true;
+	}
+
+	private void ContinuousGlitchOut()
+	{
+		if (Time.unscaledTime >= _timeSinceLastGlitch + _glitchFrequence)
+		{
+			ResetMesh();
+			GlitchOut();
+			_timeSinceLastGlitch = Time.unscaledTime;
+		}
+	}
+
+	private void ResetMesh()
+	{
 		MeshFilter.mesh = CopyMesh(_baseMesh);
 		//MeshFilter.sharedMesh = _baseMesh;
-		_isGLitched = false;
 	}
 
 	private Mesh CopyMesh(Mesh targetMesh)
