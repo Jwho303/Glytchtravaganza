@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class GameObjectGlitch : MonoBehaviour
 {
+	public enum ObjectType
+	{
+		Fixture,
+		Furniture
+	}
+
+	public ObjectType Type = ObjectType.Furniture;
 	private MeshFilter _meshFilter;
 	public MeshFilter MeshFilter
 	{
@@ -16,12 +23,13 @@ public class GameObjectGlitch : MonoBehaviour
 			return _meshFilter;
 		}
 	}
+
 	private Mesh _baseMesh;
 	private bool _isGLitched = false;
 	// Start is called before the first frame update
 	void Awake()
 	{
-		_baseMesh = MeshFilter.mesh;
+		_baseMesh = CopyMesh(MeshFilter.mesh);
 	}
 
 	public void ReverseNormals()
@@ -92,8 +100,20 @@ public class GameObjectGlitch : MonoBehaviour
 			return;
 		}
 
-		MeshFilter.mesh = _baseMesh;
-		MeshFilter.sharedMesh = _baseMesh;
+		MeshFilter.mesh = CopyMesh(_baseMesh);
+		//MeshFilter.sharedMesh = _baseMesh;
 		_isGLitched = false;
+	}
+
+	private Mesh CopyMesh(Mesh targetMesh)
+	{
+		Mesh copyMesh = new Mesh();
+		copyMesh.vertices = targetMesh.vertices;
+		copyMesh.triangles = targetMesh.triangles;
+		copyMesh.uv = targetMesh.uv;
+		copyMesh.normals = targetMesh.normals;
+		copyMesh.colors = targetMesh.colors;
+		copyMesh.tangents = targetMesh.tangents;
+		return copyMesh;
 	}
 }

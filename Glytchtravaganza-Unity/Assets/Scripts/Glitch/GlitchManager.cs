@@ -7,13 +7,17 @@ using UnityEngine;
 
 public class GlitchManager : MonoBehaviour
 {
+	[SerializeField]
 	private AnalogGlitch analogGlitch;
+	[SerializeField]
 	private DigitalGlitch digitalGlitch;
 
 	List<GameObjectGlitch> _glitchObjects = new List<GameObjectGlitch>();
 	private GameObjectGlitch RandomGlitchObject
 	{ get { return (_glitchObjects[UnityEngine.Random.Range(0, _glitchObjects.Count - 1)]); } }
 
+	[SerializeField]
+	private bool _glitchOnTime = true;
 	private float _glitchFrequency = 2f;
 	private float _lastGlitch = 0f;
 	private float _glitchDuration = 0.3f;
@@ -26,11 +30,10 @@ public class GlitchManager : MonoBehaviour
 
 	private Coroutine _glitchCoroutine;
 
+
+
 	private void Awake()
 	{
-		analogGlitch = Camera.main.gameObject.AddComponent<AnalogGlitch>();
-		digitalGlitch = Camera.main.gameObject.AddComponent<DigitalGlitch>();
-
 		_digitalGlitch = (value) =>
 		{
 			digitalGlitch.intensity = Mathf.Lerp(0f, 0.25f, value);
@@ -109,17 +112,27 @@ public class GlitchManager : MonoBehaviour
 
 	private void Update()
 	{
-		if (Time.unscaledTime >= (_lastGlitch + _glitchFrequency) && _glitchCoroutine == null)
+		if (Time.unscaledTime >= (_lastGlitch + _glitchFrequency) && _glitchCoroutine == null && _glitchOnTime)
 		{
-			RandomGlitch();
+		//	RandomGlitch();
+		}
+	}
+
+	[ContextMenu("Reset Glitch Objects")]
+	public void ResetGlitchObjects()
+	{
+		for (int i = 0; i < _glitchObjects.Count; i++)
+		{
+			_glitchObjects[i].ResetMesh();
 		}
 	}
 
 	private void RandomGlitch()
 	{
+		Debug.Log("Glitch!");
 		_lastGlitch = Time.unscaledTime;
 
-		int _randomGlitch = (UnityEngine.Random.Range(0, 5));
+		int _randomGlitch = (UnityEngine.Random.Range(0, 4));
 		IEnumerator selectedAction = null;
 
 		switch (_randomGlitch)
@@ -137,7 +150,7 @@ public class GlitchManager : MonoBehaviour
 				selectedAction = FadeGlitch(_vertexGlitch, _glitchDuration * 2f);
 				break;
 			case 4:
-				selectedAction = FadeGlitch(_resetAction, _glitchDuration * 2f);
+				//selectedAction = FadeGlitch(_resetAction, _glitchDuration * 2f);
 				break;
 
 		}
