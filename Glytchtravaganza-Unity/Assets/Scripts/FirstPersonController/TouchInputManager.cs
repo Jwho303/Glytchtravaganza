@@ -55,13 +55,13 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 		if (_keyDown && !Input.anyKey)
 		{
 			KeyUp();
-			Debug.LogFormat("[{0}] Key Up", this.name);
+			//Debug.LogFormat("[{0}] Key Up", this.name);
 		}
 
 		if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
 		{
 			KeyDown();
-			Debug.LogFormat("[{0}] Key Down", this.name);
+			//Debug.LogFormat("[{0}] Key Down", this.name);
 			_direction = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 			_magnitude = Vector2.one;
 		}
@@ -69,14 +69,14 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	public void OnBeginDrag(PointerEventData eventData)
 	{
-		Debug.LogFormat("[{0}] Begin Dragging", this.name);
+		//Debug.LogFormat("[{0}] Begin Dragging", this.name);
 		_isDragging = true;
 		_dragOrigin = eventData.position;
 	}
 
 	public void OnDrag(PointerEventData eventData)
 	{
-		Debug.LogFormat("[{0}] On Dragging", this.name);
+		//Debug.LogFormat("[{0}] On Dragging", this.name);
 		_direction = (eventData.position - _dragOrigin).normalized;
 		_magnitude.x = Mathf.Clamp(Mathf.Abs(eventData.position.x - _dragOrigin.x), 0f, _maxMagnitude) / _maxMagnitude;
 		_magnitude.y = Mathf.Clamp(Mathf.Abs(eventData.position.y - _dragOrigin.y), 0f, _maxMagnitude) / _maxMagnitude;
@@ -85,7 +85,7 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
-		Debug.LogFormat("[{0}] End Dragging", this.name);
+		//Debug.LogFormat("[{0}] End Dragging", this.name);
 		_isDragging = false;
 	}
 
@@ -93,7 +93,7 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 	{
 		if (!_isDragging)
 		{
-			Debug.LogFormat("[{0}] Pointer Click", this.name);
+			//Debug.LogFormat("[{0}] Pointer Click", this.name);
 			InputController.Instance.Tap(eventData.position);
 		}
 	}

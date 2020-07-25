@@ -5,26 +5,24 @@ using UnityEngine;
 
 public class DebugManager : MonoBehaviour
 {
-	GUIStyle debugStyle;
+	GUIStyle debugLabelStyle;
 	private bool _showDebug = false;
 	private List<DebugEntry> debugEntries = new List<DebugEntry>();
 	public void Awake()
 	{
-		debugStyle = new GUIStyle();
-		debugStyle.fontSize = 30;
-		debugStyle.fontStyle = FontStyle.Bold;
-		debugStyle.normal.textColor = Color.white;
-		BuildDebugMenu();
+		debugLabelStyle = new GUIStyle();
+		debugLabelStyle.fontSize = 30;
+		debugLabelStyle.fontStyle = FontStyle.Bold;
+		debugLabelStyle.normal.textColor = Color.white;
 
+		BuildDebugMenu();
 	}
 
 	private void BuildDebugMenu()
 	{
-
 		debugEntries.Add(new DebugLabel("Frame Rate", () => { return Mathf.RoundToInt(1f / Time.deltaTime).ToString(); }));
 		debugEntries.Add(new DebugLabel("Window", () => { return String.Format("Width {0} | Height {1} | DPI {2}", Camera.main.pixelWidth, Camera.main.pixelHeight, Screen.dpi); }));
 		debugEntries.Add(new DebugLabel("Platform", () => { return Application.platform.ToString(); }));
-
 	}
 
 	public void OnGUI()
@@ -39,12 +37,11 @@ public class DebugManager : MonoBehaviour
 		{
 			foreach (var entry in debugEntries)
 			{
-				entry.Draw(debugStyle);
+				entry.Draw(debugLabelStyle);
 			}
 		}
 		GUILayout.EndVertical();
 	}
-
 }
 
 public abstract class DebugEntry
