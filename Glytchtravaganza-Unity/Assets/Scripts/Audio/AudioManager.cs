@@ -8,13 +8,6 @@ public class AudioManager : MonoBehaviour
 	[SerializeField]
 	private List<AudioPlayer> _audioPlayers = new List<AudioPlayer>();
 
-	[SerializeField]
-	private string _suburbiaKey;
-
-	[SerializeField]
-	private string _cbdKey;
-
-	private GlitchIntensity _glitchIntensity;
 	private bool _pause = false;
 
 	private void Awake()
@@ -38,10 +31,6 @@ public class AudioManager : MonoBehaviour
 
 	private void GlitchIntensityChange(GlitchIntensity intensity)
 	{
-		Debug.LogFormat("[{0}] intenisty change: {1}", this.name, _glitchIntensity);
-
-		_glitchIntensity = intensity;
-
 		PlayAmbientSounds();
 	}
 
@@ -55,21 +44,10 @@ public class AudioManager : MonoBehaviour
 
 	private void PlayAmbientSounds()
 	{
-		if (_glitchIntensity == GlitchIntensity.None || _glitchIntensity == GlitchIntensity.Low)
+		if (!IsPlaying(GlitchController.Instance.Settings.SoundKey))
 		{
-			if (!IsPlaying(_suburbiaKey))
-			{
-				StopAllPlayers();
-				PlayClip(_suburbiaKey);
-			}
-		}
-		else
-		{
-			if (!IsPlaying(_cbdKey))
-			{
-				StopAllPlayers();
-				PlayClip(_cbdKey);
-			}
+			StopAllPlayers();
+			PlayClip(GlitchController.Instance.Settings.SoundKey);
 		}
 	}
 
@@ -94,8 +72,13 @@ public class AudioManager : MonoBehaviour
 
 	internal void SpawnClips(AudioData audioData)
 	{
-		CreatePlayer(audioData.GetAudioObject(_suburbiaKey));
-		CreatePlayer(audioData.GetAudioObject(_cbdKey));
+		for (int i = 0; i < audioData.AudioObjects.Count; i++)
+		{
+			if (audioData.AudioObjects[i].SpawnOnStart)
+			{
+				CreatePlayer(audioData.GetAudioObject(audioData.AudioObjects[i].Key));
+			}
+		}
 	}
 
 	private void CreatePlayer(AudioObject audioObject)

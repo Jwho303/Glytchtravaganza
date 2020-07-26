@@ -34,6 +34,7 @@ public class AudioData : ScriptableObject
 public class AudioObject
 {
 	public string Key;
+	public bool SpawnOnStart;
 	public AudioClip[] AudioClips;
 }
 

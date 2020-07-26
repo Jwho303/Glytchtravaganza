@@ -43,13 +43,9 @@ public class VideoController
 
 	private void Glitch(GlitchIntensity intensity)
 	{
-		if (intensity == GlitchIntensity.Medium)
+		if (GlitchController.Instance.Settings.PlayVideo)
 		{
-			PlayVideo(_shortsKey, 0.5f, true);
-		}
-		else if (intensity == GlitchIntensity.High)
-		{
-			PlayVideo(_shortsKey, 2f,true);
+			PlayVideo(GlitchController.Instance.Settings);
 		}
 	}
 
@@ -69,6 +65,11 @@ public class VideoController
 	public void PlayVideo(string key, float duration, bool jumpStart)
 	{
 		_manager.PlayVideo(_videoData.GetVideoURL(key), duration, jumpStart);
+	}
+
+	public void PlayVideo(GlitchSettings settings)
+	{
+		PlayVideo(settings.VideoKey, settings.VideoDuration, settings.JumpVideo);
 	}
 
 	public void StopVideo()

@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public enum GlitchIntensity
 {
 	None = 0,
-	Low = 5,
-	Medium = 10,
-	High = 20
+	Low = 1,
+	Medium = 2,
+	High = 3
 }
 
 public class GlitchController
@@ -30,6 +31,9 @@ public class GlitchController
 
 	private Action<GlitchIntensity> _glitchIntensitySubscription = delegate { };
 	private Action<GlitchIntensity> _glitchSubscription = delegate { };
+
+	private GlitchData _glitchData;
+	public GlitchSettings Settings => _glitchData.GlitchSettings.Find(item => item.GlitchIntensity == GlitchIntensity);
 
 	public void SubscribeToGlitchIntensityChange(Action<GlitchIntensity> action)
 	{
@@ -64,6 +68,7 @@ public class GlitchController
 
 	internal void Init()
 	{
+		_glitchData = Resources.LoadAll<GlitchData>("").FirstOrDefault();
 		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
 	}
 
@@ -78,3 +83,4 @@ public class GlitchController
 		_glitchSubscription(GlitchIntensity);
 	}
 }
+

@@ -18,10 +18,7 @@ public class GlitchManager : MonoBehaviour
 
 	[SerializeField]
 	private bool _glitchOnTime = true;
-	private float _glitchFrequency = 2f;
 	private float _lastGlitch = 0f;
-	private float _screenGlitchDuration = 0.3f;
-	private float _objectGlitchDuration = 10f;
 
 	private Action<float> _digitalGlitch => (value) => DigitalScreenGlitch(value);
 	private Action<float> _analogueGlitch => (value) => AnalogueScreenGlitch(value);
@@ -86,7 +83,7 @@ public class GlitchManager : MonoBehaviour
 
 	public bool CanGlitch()
 	{
-		return Time.unscaledTime >= (_lastGlitch + _glitchFrequency) && _glitchCoroutine == null && _glitchOnTime;
+		return Time.unscaledTime >= (_lastGlitch + GlitchController.Instance.Settings.GlitchFrequency) && _glitchCoroutine == null && _glitchOnTime;
 	}
 
 	private void Update()
@@ -100,7 +97,7 @@ public class GlitchManager : MonoBehaviour
 		{
 			//Debug.Log("Glitch!");
 			_lastGlitch = Time.unscaledTime;
-			_glitchCoroutine = StartCoroutine(GlitchOut((int)glitchIntensity));
+			_glitchCoroutine = StartCoroutine(GlitchOut(glitchIntensity));
 		}
 	}
 
@@ -117,22 +114,22 @@ public class GlitchManager : MonoBehaviour
 		glitchAction(0f);
 	}
 
-	private IEnumerator GlitchOut(int glitchCount)
+	private IEnumerator GlitchOut(GlitchIntensity intensity)
 	{
 
 		float startTime = Time.unscaledTime;
 
-		StartCoroutine(FadeGlitch(_analogueGlitch, _screenGlitchDuration));
+		StartCoroutine(FadeGlitch(_analogueGlitch, GlitchController.Instance.Settings.ScreenGlitchDuration));
 
 		if (_screenGlitchCoroutine != null)
 		{
 			StopCoroutine(_screenGlitchCoroutine);
 		}
-		_screenGlitchCoroutine = StartCoroutine(FadeGlitch(_digitalGlitch, _objectGlitchDuration));
+		_screenGlitchCoroutine = StartCoroutine(FadeGlitch(_digitalGlitch, GlitchController.Instance.Settings.ObjectGlitchDuration));
 		//Debug.Log("Start Co");
 		List<GameObjectGlitch> glitchObjects = new List<GameObjectGlitch>();
 
-		for (int i = 0; i < glitchCount; i++)
+		for (int i = 0; i < GlitchController.Instance.Settings.GlitchObjectCount; i++)
 		{
 			GameObjectGlitch gameObjectGlitch = RandomGlitchObject;
 			//Debug.Log(gameObjectGlitch.name);
@@ -140,7 +137,7 @@ public class GlitchManager : MonoBehaviour
 			glitchObjects.Add(gameObjectGlitch);
 		}
 
-		while (Time.unscaledTime <= startTime + _objectGlitchDuration)
+		while (Time.unscaledTime <= startTime + GlitchController.Instance.Settings.ObjectGlitchDuration)
 		{
 			yield return new WaitForEndOfFrame();
 		}
@@ -154,3 +151,4 @@ public class GlitchManager : MonoBehaviour
 	}
 
 }
+
