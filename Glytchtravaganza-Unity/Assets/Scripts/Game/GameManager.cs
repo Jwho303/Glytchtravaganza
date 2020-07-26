@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
         AudioController.Instance.Init();
         GlitchController = GlitchController.Instance;
         GlitchController.Init();
+        VideoController.Instance.Init();
 
         GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.None);
     }

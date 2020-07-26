@@ -32,8 +32,4 @@ public class AudioController
 		_audioManager.SpawnClips(_audioData);
 	}
 
-	public void PlayClip(string key)
-	{
-		_audioManager.PlayClip(key);
-	}
 }
