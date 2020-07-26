@@ -33,6 +33,12 @@ public class VideoController
 		_videoData = Resources.LoadAll<VideoData>("").FirstOrDefault();
 		GlitchController.Instance.SubscribeToGlitchIntensityChange(GlitchIntensityChange);
 		GlitchController.Instance.SubscribeToGlitch(Glitch);
+		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
+	}
+
+	private void OpenArtWork(Artwork obj)
+	{
+		StopVideo();
 	}
 
 	private void Glitch(GlitchIntensity intensity)

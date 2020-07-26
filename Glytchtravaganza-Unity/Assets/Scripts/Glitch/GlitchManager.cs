@@ -28,6 +28,7 @@ public class GlitchManager : MonoBehaviour
 	private Action<float> _screenGlitch => (UnityEngine.Random.Range(0, 2) < 1) ? _digitalGlitch : _analogueGlitch;
 
 	private Coroutine _glitchCoroutine;
+	private Coroutine _screenGlitchCoroutine;
 
 	private void DigitalScreenGlitch(float value)
 	{
@@ -48,6 +49,24 @@ public class GlitchManager : MonoBehaviour
 	private void ResetGlitchObject(GameObjectGlitch gameObjectGlitch)
 	{
 		gameObjectGlitch.IsGLitched = false;
+	}
+
+	internal void StopGlitches()
+	{
+		if (_screenGlitchCoroutine != null)
+		{
+			StopCoroutine(_screenGlitchCoroutine);
+			DigitalScreenGlitch(0f);
+			_screenGlitchCoroutine = null;
+		}
+
+		if (_glitchCoroutine != null)
+		{
+			StopCoroutine(_glitchCoroutine);
+			_glitchCoroutine = null;
+		}
+
+		ResetAllGlitches();
 	}
 
 	[ContextMenu("Reset Glitch Objects")]
@@ -104,7 +123,12 @@ public class GlitchManager : MonoBehaviour
 		float startTime = Time.unscaledTime;
 
 		StartCoroutine(FadeGlitch(_analogueGlitch, _screenGlitchDuration));
-		StartCoroutine(FadeGlitch(_digitalGlitch, _objectGlitchDuration));
+
+		if (_screenGlitchCoroutine != null)
+		{
+			StopCoroutine(_screenGlitchCoroutine);
+		}
+		_screenGlitchCoroutine = StartCoroutine(FadeGlitch(_digitalGlitch, _objectGlitchDuration));
 		//Debug.Log("Start Co");
 		List<GameObjectGlitch> glitchObjects = new List<GameObjectGlitch>();
 

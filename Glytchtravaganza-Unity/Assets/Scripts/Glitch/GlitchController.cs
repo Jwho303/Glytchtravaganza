@@ -55,12 +55,17 @@ public class GlitchController
 
 	public bool CanGlitch()
 	{
-		return _glitchManager.CanGlitch() && GlitchIntensity != GlitchIntensity.None;
+		return _glitchManager.CanGlitch() && GlitchIntensity != GlitchIntensity.None && !ArtworkController.Instance.IsOpen;
 	}
 
 	internal void Init()
 	{
-		
+		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
+	}
+
+	private void OpenArtWork(Artwork obj)
+	{
+		_glitchManager.StopGlitches();
 	}
 
 	public void RandomGlitch()

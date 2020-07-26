@@ -15,11 +15,25 @@ public class AudioManager : MonoBehaviour
 	private string _cbdKey;
 
 	private GlitchIntensity _glitchIntensity;
+	private bool _pause = false;
 
 	private void Awake()
 	{
 		AudioController.Instance.RegisterManager(this);
 		GlitchController.Instance.SubscribeToGlitchIntensityChange(GlitchIntensityChange);
+		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
+		ArtworkController.Instance.SubscribeToCloseGallery(CloseArtWork);
+	}
+
+	private void OpenArtWork(Artwork obj)
+	{
+		StopAllPlayers();
+		_pause = true;
+	}
+
+	private void CloseArtWork()
+	{
+		_pause = false;
 	}
 
 	private void GlitchIntensityChange(GlitchIntensity intensity)
@@ -33,7 +47,10 @@ public class AudioManager : MonoBehaviour
 
 	public void Update()
 	{
-		PlayAmbientSounds();
+		if (!_pause)
+		{
+			PlayAmbientSounds();
+		}
 	}
 
 	private void PlayAmbientSounds()
@@ -87,7 +104,9 @@ public class AudioManager : MonoBehaviour
 	internal void PlayClip(string key)
 	{
 		AudioPlayer audioPlayer = _audioPlayers.Find(item => item.Key == key);
-		audioPlayer.AudioSources[Random.Range(0, audioPlayer.AudioSources.Count)].Play();
+		AudioSource source = audioPlayer.AudioSources[Random.Range(0, audioPlayer.AudioSources.Count)];
+		source.time = Random.Range(0f, source.clip.length);
+		source.Play();
 	}
 
 	internal void StopAllPlayers()

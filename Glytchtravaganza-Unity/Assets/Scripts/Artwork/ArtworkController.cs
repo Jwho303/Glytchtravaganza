@@ -25,7 +25,7 @@ public class ArtworkController
 
 	private Action<Artwork> _galleryOpenSubscription = delegate { };
 	private Action _galleryClosedSubscription = delegate { };
-
+	public bool IsOpen { get; private set; }
 
 	public void Init()
 	{
@@ -51,11 +51,13 @@ public class ArtworkController
 	{
 		_artworkManager.ArtworkSelected(_artworkData.Get(artworkClickable.Key));
 		_galleryOpenSubscription(_artworkData.Get(artworkClickable.Key));
+		IsOpen = true;
 	}
 
 	public void ArtworkClosed()
 	{
 		_galleryClosedSubscription();
+		IsOpen = false;
 	}
 
 }

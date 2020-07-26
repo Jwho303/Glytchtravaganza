@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
 using UnityEngine;
@@ -105,7 +106,7 @@ public class GameObjectGlitch : MonoBehaviour
 		}
 		foreach (KeyValuePair<Vector3, List<int>> pair in dictionary)
 		{
-			Vector3 newPos = pair.Key * Random.Range(0.9f, 1.1f);
+			Vector3 newPos = pair.Key * UnityEngine.Random.Range(0.9f, 1.1f);
 			foreach (int i in pair.Value)
 			{
 				verts[i] = newPos;
@@ -120,7 +121,7 @@ public class GameObjectGlitch : MonoBehaviour
 
 		//if (this.Type == ObjectType.Furniture)
 		//{
-		if (Random.Range(0, 4) <= 2)
+		if (UnityEngine.Random.Range(0, 4) <= 2)
 		{
 			RandomizeVerts();
 		}
@@ -168,7 +169,7 @@ public class GameObjectGlitch : MonoBehaviour
 		{
 			if (!_audioSource.isPlaying)
 			{
-				_audioSource.time = Random.Range(0f, _audioSource.clip.length);
+				_audioSource.time = UnityEngine.Random.Range(0f, _audioSource.clip.length);
 				_audioSource.Play();
 			}
 		}
