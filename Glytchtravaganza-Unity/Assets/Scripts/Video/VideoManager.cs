@@ -27,7 +27,7 @@ public class VideoManager : MonoBehaviour
 		{
 			if (_videoPlayer.isPlaying)
 			{
-				if (_jumpStart)
+				if (_jumpStart && _videoPlayer.length > 0f)
 				{
 					JumpStart();
 				}
