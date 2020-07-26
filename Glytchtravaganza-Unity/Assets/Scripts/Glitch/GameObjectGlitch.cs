@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Schema;
 using UnityEngine;
 
 public class GameObjectGlitch : MonoBehaviour
@@ -170,6 +168,7 @@ public class GameObjectGlitch : MonoBehaviour
 			if (!_audioSource.isPlaying)
 			{
 				_audioSource.time = UnityEngine.Random.Range(0f, _audioSource.clip.length);
+				_audioSource.pitch = Random.Range(0f, 1f);
 				_audioSource.Play();
 			}
 		}
