@@ -872,7 +872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a2b7c7d9a50a5d4fba62ddb015e3cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  glitchIntensity: 5
+  glitchIntensity: 0
 --- !u!4 &1488100338
 Transform:
   m_ObjectHideFlags: 0
