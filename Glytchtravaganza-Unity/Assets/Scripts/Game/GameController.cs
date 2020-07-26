@@ -59,6 +59,7 @@ public class GameController
 
 		if (_artworkOpenCount >= 8 && GlitchController.Instance.GlitchIntensity == GlitchIntensity.High)
 		{
+			_artworkOpenCount = 0;
 			GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.None);
 		}
 	}
