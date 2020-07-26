@@ -163,7 +163,7 @@ Material:
     - _Cutoff: 0.5
     - _DepthOffsetEnable: 0
     - _DetailAlbedoScale: 1
-    - _DetailNormalMapScale: 0.05
+    - _DetailNormalMapScale: 1
     - _DetailNormalScale: 0.05
     - _DetailSmoothnessScale: 1
     - _DiffusionProfile: 0
@@ -267,7 +267,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _Color: {r: 0.14509805, g: 0.15686275, b: 0.18039216, a: 1}
+    - _Color: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
