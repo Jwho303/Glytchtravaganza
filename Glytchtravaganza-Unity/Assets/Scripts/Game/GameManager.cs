@@ -8,12 +8,18 @@ public class GameManager : MonoBehaviour
     GlitchIntensity glitchIntensity = GlitchIntensity.Low;
 
     GlitchController GlitchController;
-    // Start is called before the first frame update
-    void Awake()
-    {
+	// Start is called before the first frame update
+
+	private void Awake()
+	{
         Application.targetFrameRate = 60;
+
         GameController.Instance.RegisterManager(this);
         GameController.Instance.Init();
+    }
+
+	void Start()
+    {
         ArtworkController.Instance.Init();
         AudioController.Instance.Init();
         GlitchController = GlitchController.Instance;

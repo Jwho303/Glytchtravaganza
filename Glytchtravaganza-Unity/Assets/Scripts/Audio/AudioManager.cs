@@ -77,12 +77,15 @@ public class AudioManager : MonoBehaviour
 	{
 		bool result = false;
 		AudioPlayer audioPlayer = _audioPlayers.Find(item => item.Key == key);
-		for (int i = 0; i < audioPlayer.AudioSources.Count; i++)
+		if (audioPlayer != null)
 		{
-			if (audioPlayer.AudioSources[i].isPlaying)
+			for (int i = 0; i < audioPlayer.AudioSources.Count; i++)
 			{
-				result = true;
-				break;
+				if (audioPlayer.AudioSources[i].isPlaying)
+				{
+					result = true;
+					break;
+				}
 			}
 		}
 

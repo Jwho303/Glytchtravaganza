@@ -45,7 +45,7 @@ public class GlitchController
 	{
 		GlitchIntensity = intensity;
 		_glitchIntensitySubscription(GlitchIntensity);
-		if (intensity == GlitchIntensity.None)
+		if (intensity == GlitchIntensity.None && _glitchManager != null)
 		{
 			_glitchManager.StopGlitches();
 		}
