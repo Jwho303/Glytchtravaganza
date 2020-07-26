@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class AudioManager : MonoBehaviour
 {
@@ -24,19 +24,52 @@ public class AudioManager : MonoBehaviour
 
 	private void GlitchIntensityChange(GlitchIntensity intensity)
 	{
-
 		Debug.LogFormat("[{0}] intenisty change: {1}", this.name, _glitchIntensity);
 
+		_glitchIntensity = intensity;
+
+		PlayAmbientSounds();
+	}
+
+	public void Update()
+	{
+		PlayAmbientSounds();
+	}
+
+	private void PlayAmbientSounds()
+	{
 		if (_glitchIntensity == GlitchIntensity.None || _glitchIntensity == GlitchIntensity.Low)
 		{
-			PlayClip(_suburbiaKey);
+			if (!IsPlaying(_suburbiaKey))
+			{
+				StopAllPlayers();
+				PlayClip(_suburbiaKey);
+			}
 		}
 		else
 		{
-			PlayClip(_cbdKey);
+			if (!IsPlaying(_cbdKey))
+			{
+				StopAllPlayers();
+				PlayClip(_cbdKey);
+			}
+		}
+	}
+
+	private bool IsPlaying(string key)
+	{
+		bool result = false;
+		AudioPlayer audioPlayer = _audioPlayers.Find(item => item.Key == key);
+		for (int i = 0; i < audioPlayer.AudioSources.Count; i++)
+		{
+			if (audioPlayer.AudioSources[i].isPlaying)
+			{
+				result = true;
+				break;
+			}
 		}
 
-		_glitchIntensity = intensity;
+		return result;
 	}
 
 	internal void SpawnClips(AudioData audioData)
@@ -53,7 +86,8 @@ public class AudioManager : MonoBehaviour
 
 	internal void PlayClip(string key)
 	{
-		
+		AudioPlayer audioPlayer = _audioPlayers.Find(item => item.Key == key);
+		audioPlayer.AudioSources[Random.Range(0, audioPlayer.AudioSources.Count)].Play();
 	}
 
 	internal void StopAllPlayers()
