@@ -2,6 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+public enum GlitchIntensity
+{
+	None = 0,
+	Low = 5,
+	Medium = 10,
+	High = 20
+}
 
 public class GlitchController
 {
@@ -19,15 +26,36 @@ public class GlitchController
 		}
 	}
 
-	private GlitchManager _gameManager;
+	public GlitchIntensity GlitchIntensity { get; private set; } = GlitchIntensity.None;
+
+	private Action<GlitchIntensity> _glitchIntensitySubscription = delegate { };
+	private Action<GlitchIntensity> _glitchSubscription = delegate { };
+
+	public void SubscribeToGlitchIntensityChange(Action<GlitchIntensity> action)
+	{
+		_glitchIntensitySubscription += action;
+	}
+
+	public void SubscribeToGlitch(Action<GlitchIntensity> action)
+	{
+		_glitchSubscription += action;
+	}
+
+	public void SetGlitchIntensity(GlitchIntensity intensity)
+	{
+		GlitchIntensity = intensity;
+		_glitchIntensitySubscription(GlitchIntensity);
+	}
+
+	private GlitchManager _glitchManager;
 	public void RegisterManager(GlitchManager manager)
 	{
-		_gameManager = manager;
+		_glitchManager = manager;
 	}
 
 	public bool CanGlitch()
 	{
-		return _gameManager.CanGlitch();
+		return _glitchManager.CanGlitch() && GlitchIntensity != GlitchIntensity.None;
 	}
 
 	internal void Init()
@@ -35,8 +63,9 @@ public class GlitchController
 		
 	}
 
-	public void RandomGlitch(GlitchManager.GlitchIntensity glitchIntensity)
+	public void RandomGlitch()
 	{
-		_gameManager.RandomGlitch(glitchIntensity);
+		_glitchManager.RandomGlitch(GlitchIntensity);
+		_glitchSubscription(GlitchIntensity);
 	}
 }

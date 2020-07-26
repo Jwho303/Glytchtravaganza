@@ -25,6 +25,8 @@ public class GameObjectGlitch : MonoBehaviour
 		}
 	}
 
+	private AudioSource _audioSource;
+
 	private Mesh _baseMesh;
 	private bool _isGLitched = false;
 	public bool IsGLitched
@@ -35,9 +37,15 @@ public class GameObjectGlitch : MonoBehaviour
 		}
 		set
 		{
+			if (!_isGLitched && value == true)
+			{
+				PlaySound();
+			}
+
 			if (_isGLitched && value == false)
 			{
 				ResetMesh();
+				StopSound();
 			}
 
 			_isGLitched = value;
@@ -49,6 +57,7 @@ public class GameObjectGlitch : MonoBehaviour
 	void Awake()
 	{
 		_baseMesh = CopyMesh(MeshFilter.mesh);
+		_audioSource = GetComponent<AudioSource>();
 	}
 
 	private void Update()
@@ -151,5 +160,25 @@ public class GameObjectGlitch : MonoBehaviour
 		copyMesh.colors = targetMesh.colors;
 		copyMesh.tangents = targetMesh.tangents;
 		return copyMesh;
+	}
+
+	private void PlaySound()
+	{
+		if (_audioSource != null)
+		{
+			if (!_audioSource.isPlaying)
+			{
+				_audioSource.time = Random.Range(0f, _audioSource.clip.length);
+				_audioSource.Play();
+			}
+		}
+	}
+
+	private void StopSound()
+	{
+		if (_audioSource != null)
+		{
+			_audioSource.Stop();
+		}
 	}
 }

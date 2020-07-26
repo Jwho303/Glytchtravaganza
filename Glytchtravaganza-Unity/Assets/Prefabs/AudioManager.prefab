@@ -43,3 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60db43fe0feb24146b8d985534080ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _audioPlayers: []
+  _suburbiaKey: Suburbia
+  _glitchKey: CBD

@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    GlitchManager.GlitchIntensity glitchIntensity = GlitchManager.GlitchIntensity.Low;
+    GlitchIntensity glitchIntensity = GlitchIntensity.Low;
 
     GlitchController GlitchController;
     // Start is called before the first frame update
@@ -15,19 +15,26 @@ public class GameManager : MonoBehaviour
         GameController.Instance.RegisterManager(this);
         GameController.Instance.Init();
         ArtworkController.Instance.Init();
+        AudioController.Instance.Init();
         GlitchController = GlitchController.Instance;
         GlitchController.Init();
-    }
 
-    private float _glitchFrequency = 2f;
-    private float _lastGlitch = 0f;
-    
+        GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.None);
+    }
+   
     // Update is called once per frame
     void Update()
     {
+        glitchIntensity = GlitchController.Instance.GlitchIntensity;
+
         if (GlitchController.CanGlitch())
         {
-            GlitchController.RandomGlitch(glitchIntensity);
+            GlitchController.RandomGlitch();
         }
+    }
+
+	private void OnValidate()
+	{
+        GlitchController.Instance.SetGlitchIntensity(glitchIntensity);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 [CreateAssetMenu(fileName = "AudioData", menuName = "AudioData", order = 1)]
 public class AudioData : ScriptableObject
@@ -14,7 +15,17 @@ public class AudioData : ScriptableObject
 
 	private AudioClip GetRandomClip(AudioClip[] audioClips)
 	{
-		return audioClips[Random.Range(0, audioClips.Length - 1)];
+		return audioClips[UnityEngine.Random.Range(0, audioClips.Length - 1)];
+	}
+
+	internal AudioClip[] GetAudioClips(string key)
+	{
+		return AudioObjects.Find((item) => item.Key == key).AudioClips;
+	}
+
+	internal AudioObject GetAudioObject(string key)
+	{
+		return AudioObjects.Find((item) => item.Key == key);
 	}
 }
 

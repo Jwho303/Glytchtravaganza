@@ -7,14 +7,6 @@ using UnityEngine;
 
 public class GlitchManager : MonoBehaviour
 {
-	public enum GlitchIntensity
-	{
-		None = 0,
-		Low = 5,
-		Medium = 10,
-		High = 20
-	}
-
 	[SerializeField]
 	private AnalogGlitch analogGlitch;
 	[SerializeField]
@@ -39,7 +31,7 @@ public class GlitchManager : MonoBehaviour
 
 	private void DigitalScreenGlitch(float value)
 	{
-		digitalGlitch.intensity = Mathf.Lerp(0f, 0.5f, value);
+		digitalGlitch.intensity = Mathf.Lerp(0f, 0.1f, value);
 	}
 
 	private void AnalogueScreenGlitch(float value)
@@ -110,8 +102,9 @@ public class GlitchManager : MonoBehaviour
 	{
 
 		float startTime = Time.unscaledTime;
-		Action<float> screenGlitch = _screenGlitch;
-		StartCoroutine(FadeGlitch(screenGlitch, _screenGlitchDuration));
+
+		StartCoroutine(FadeGlitch(_analogueGlitch, _screenGlitchDuration));
+		StartCoroutine(FadeGlitch(_digitalGlitch, _objectGlitchDuration));
 		//Debug.Log("Start Co");
 		List<GameObjectGlitch> glitchObjects = new List<GameObjectGlitch>();
 
