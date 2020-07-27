@@ -52,6 +52,18 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	private void CheckKeyPresses()
 	{
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			if (ArtworkController.Instance.IsOpen)
+			{
+				ArtworkController.Instance.ArtworkClosed();
+			}
+			else
+			{
+				Application.Quit();
+			}
+		}
+
 		if (_keyDown && !Input.anyKey)
 		{
 			KeyUp();

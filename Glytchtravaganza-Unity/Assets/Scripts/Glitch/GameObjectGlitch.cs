@@ -152,6 +152,7 @@ public class GameObjectGlitch : MonoBehaviour
 	private Mesh CopyMesh(Mesh targetMesh)
 	{
 		Mesh copyMesh = new Mesh();
+	
 		copyMesh.vertices = targetMesh.vertices;
 		copyMesh.triangles = targetMesh.triangles;
 		copyMesh.uv = targetMesh.uv;
