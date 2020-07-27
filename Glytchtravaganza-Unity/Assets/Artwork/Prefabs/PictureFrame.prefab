@@ -25,13 +25,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 130312}
-  m_LocalRotation: {x: -0.00000019470718, y: -0.00000008146036, z: 1, w: 0.000000075497894}
+  m_LocalRotation: {x: 0.7071068, y: 0.7071068, z: 0, w: 0}
   m_LocalPosition: {x: -0.00000012231897, y: 0.000000033931755, z: -0.00092967605}
-  m_LocalScale: {x: 0.03937008, y: 0.03937008, z: 0.03937008}
-  m_Children: []
+  m_LocalScale: {x: 0.045, y: 0.035, z: 0.03937008}
+  m_Children:
+  - {fileID: 470908}
   m_Father: {fileID: 482970}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 90}
 --- !u!33 &3366698
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -52,8 +53,8 @@ MeshRenderer:
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
@@ -89,7 +90,7 @@ GameObject:
   m_Component:
   - component: {fileID: 482970}
   m_Layer: 0
-  m_Name: Painting
+  m_Name: PictureFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,10 +105,9 @@ Transform:
   m_GameObject: {fileID: 172082}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.365, y: 0.365, z: 0.365}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 471590}
-  - {fileID: 470908}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -136,12 +136,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 184180}
-  m_LocalRotation: {x: -0.00000019470718, y: -0.00000008146036, z: 1, w: 0.000000075497894}
-  m_LocalPosition: {x: -0.00000012186084, y: 0.000000030863017, z: -0.010870171}
-  m_LocalScale: {x: 0.03937008, y: 0.03937008, z: 0.03937008}
+  m_LocalRotation: {x: -0, y: -0, z: -1.6500625e-15, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.05258623}
+  m_LocalScale: {x: 1.3674659, y: 1.1889, z: 1}
   m_Children: []
-  m_Father: {fileID: 482970}
-  m_RootOrder: 1
+  m_Father: {fileID: 471590}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3354730
 MeshFilter:

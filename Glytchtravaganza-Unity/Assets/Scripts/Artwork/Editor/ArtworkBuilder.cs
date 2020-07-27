@@ -11,6 +11,11 @@ using System.Runtime.CompilerServices;
 
 public class ShowPopupExample : EditorWindow
 {
+	string imageWidthText = "265";
+	string imageHeightText = "300";
+	string frameWidthText = "265";
+	string frameHeightText = "300";
+
 	[MenuItem("Assets / Create / Build Artwork Object", priority = 0)]
 	static void Init()
 	{
@@ -21,20 +26,23 @@ public class ShowPopupExample : EditorWindow
 
 	void OnGUI()
 	{
-		string widthText = "265";
-		string heightText = "300";
+
 		EditorGUILayout.BeginVertical();
 		EditorGUILayout.LabelField(string.Format("Building new artwork {0}", Selection.activeObject.name), EditorStyles.wordWrappedLabel);
-		widthText = EditorGUILayout.TextField("Width in mm", widthText);
-		heightText = EditorGUILayout.TextField("Height in mm", heightText);
+		imageWidthText = EditorGUILayout.TextField("Image Width in mm", imageWidthText);
+		imageHeightText = EditorGUILayout.TextField("Image Height in mm", imageHeightText);
+		frameWidthText = EditorGUILayout.TextField("Frame Width in mm", frameWidthText);
+		frameHeightText = EditorGUILayout.TextField("Frame Height in mm", frameHeightText);
 		if (GUILayout.Button("Build"))
 		{
-			float width = 0;
-			float height = 0;
+			float imageWidth = 0;
+			float imageHeight = 0;
+			float frameWidth = 0;
+			float frameHeight = 0;
 
-			if (float.TryParse(widthText, out width) && float.TryParse(heightText, out height))
+			if (float.TryParse(imageWidthText, out imageWidth) && float.TryParse(imageHeightText, out imageHeight) && float.TryParse(frameWidthText, out frameWidth) && float.TryParse(frameHeightText, out frameHeight))
 			{
-				ArtworkBuilder.BuildArtwork(width, height);
+				ArtworkBuilder.BuildArtwork(imageWidth, imageHeight, frameWidth, frameHeight);
 			}
 			else
 			{
@@ -50,7 +58,7 @@ public class ShowPopupExample : EditorWindow
 public static class ArtworkBuilder
 {
 
-	public static void BuildArtwork(float width, float height)
+	public static void BuildArtwork(float imageWidth, float imageHeight, float frameWidth, float frameHeight)
 	{
 		if (Selection.activeObject is Texture)
 		{
@@ -61,7 +69,7 @@ public static class ArtworkBuilder
 			{
 				AssetDatabase.Refresh();
 				//string path = (Path.Combine(Application.dataPath, "Prefabs/Artwork", tex.name + ".prefab"));
-				GameObject go = BuildPaintingObject(tex, width, height);
+				GameObject go = BuildPaintingObject(tex, imageWidth, imageHeight, frameWidth, frameHeight);
 				// ModelExporter.ExportObject(path, go);
 
 				// path = AssetDatabase.GenerateUniqueAssetPath(path);
@@ -78,11 +86,11 @@ public static class ArtworkBuilder
 
 	}
 
-	private static GameObject BuildPaintingObject(Texture tex, float width, float height)
+	private static GameObject BuildPaintingObject(Texture tex, float imageWidth, float imageHeight, float frameWidth, float frameHeight)
 	{
 		GameObject gameObject = new GameObject(tex.name);
 		MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
-		Material mat = new Material(Shader.Find("Standard"));
+		Material mat = new Material(Shader.Find("Unlit/Texture"));
 		mat.mainTexture = tex;
 		meshRenderer.sharedMaterial = mat;
 
@@ -90,12 +98,15 @@ public static class ArtworkBuilder
 
 		Mesh mesh = new Mesh();
 
+		imageWidth = imageWidth / 2000f;
+		imageHeight = imageHeight / 2000f;
+
 		Vector3[] vertices = new Vector3[4]
 		{
-			new Vector3(0, 0, 0),
-			new Vector3(width/1000f, 0, 0),
-			new Vector3(0, height/1000f, 0),
-			new Vector3(width/1000f, height/1000f, 0)
+			new Vector3(-imageWidth, -imageHeight, 0),
+			new Vector3(imageWidth, -imageHeight, 0),
+			new Vector3(-imageWidth, imageHeight, 0),
+			new Vector3(imageWidth, imageHeight, 0)
 		};
 		mesh.vertices = vertices;
 
@@ -129,12 +140,22 @@ public static class ArtworkBuilder
 		meshFilter.mesh = mesh;
 
 		BoxCollider collider = gameObject.AddComponent<BoxCollider>();
-		collider.size = new Vector3(collider.size.x, collider.size.y, collider.size.x / 10f);
+		collider.size = new Vector3(frameWidth / 1000f, 3f, collider.size.x / 10f);
 		ArtworkClickable artworkClickable = gameObject.AddComponent<ArtworkClickable>();
 		artworkClickable.Key = tex.name;
 
 		ArtworkData artworkData = Resources.LoadAll<ArtworkData>("").FirstOrDefault();
 		artworkData.AddArtwork(tex.name);
+
+		string path = Path.Combine(Application.dataPath, "Artwork/Prefabs/PictureFrame.prefab");
+
+		//Debug.Log(path + " : " + PrefabUtility.LoadPrefabContents(path) != null);
+
+		GameObject pictureFrame = GameObject.Instantiate(PrefabUtility.LoadPrefabContents(path));
+		pictureFrame.transform.localScale = new Vector3(frameWidth / 1000f, frameHeight / 1000f, pictureFrame.transform.localScale.z);
+
+		pictureFrame.transform.SetParent(gameObject.transform);
+		//pictureFrame.transform.localPosition = new Vector3(imageWidth, imageHeight, 0f);
 
 		return gameObject;
 	}
