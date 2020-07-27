@@ -39,7 +39,7 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 		_canvasGroup.blocksRaycasts = false;
 	}
 
-	public void LateUpdate()
+	public void FixedUpdate()
 	{
 		CheckKeyPresses();
 

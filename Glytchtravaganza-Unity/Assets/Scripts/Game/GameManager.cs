@@ -4,44 +4,60 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    GlitchIntensity glitchIntensity = GlitchIntensity.Low;
+	[SerializeField]
+	GlitchIntensity glitchIntensity = GlitchIntensity.Low;
 
-    GlitchController GlitchController;
+	GlitchController GlitchController;
 	// Start is called before the first frame update
 
 	private void Awake()
 	{
-        Application.targetFrameRate = 60;
+#if UNITY_EDITOR
+		Desktop();
+#elif UNITY_WEBGL
+		WebBrowser();
+#else
+		Desktop();
+#endif
+		GameController.Instance.RegisterManager(this);
+		GameController.Instance.Init();
+	}
 
-        GameController.Instance.RegisterManager(this);
-        GameController.Instance.Init();
-    }
+	private void WebBrowser()
+	{
+		Application.targetFrameRate = -1;
+
+	}
+
+	private void Desktop()
+	{
+		Application.targetFrameRate = 60;
+	}
 
 	void Start()
-    {
-        ArtworkController.Instance.Init();
-        AudioController.Instance.Init();
-        GlitchController = GlitchController.Instance;
-        GlitchController.Init();
-        VideoController.Instance.Init();
+	{
+		ArtworkController.Instance.Init();
+		AudioController.Instance.Init();
+		GlitchController = GlitchController.Instance;
+		GlitchController.Init();
+		VideoController.Instance.Init();
 
-        GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.None);
-    }
-   
-    // Update is called once per frame
-    void Update()
-    {
-        glitchIntensity = GlitchController.Instance.GlitchIntensity;
+		GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.None);
+	}
 
-        if (GlitchController.CanGlitch())
-        {
-            GlitchController.RandomGlitch();
-        }
-    }
+	// Update is called once per frame
+	void Update()
+	{
+		glitchIntensity = GlitchController.Instance.GlitchIntensity;
+
+		if (GlitchController.CanGlitch())
+		{
+			GlitchController.RandomGlitch();
+		}
+	}
 
 	private void OnValidate()
 	{
-        GlitchController.Instance.SetGlitchIntensity(glitchIntensity);
-    }
+		GlitchController.Instance.SetGlitchIntensity(glitchIntensity);
+	}
 }

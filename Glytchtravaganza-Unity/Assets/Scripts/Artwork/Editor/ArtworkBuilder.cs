@@ -9,31 +9,67 @@ using System.Linq;
 using UnityEditor.Formats.Fbx.Exporter;
 using System.Runtime.CompilerServices;
 
+public class ShowPopupExample : EditorWindow
+{
+	[MenuItem("Assets / Create / Build Artwork Object", priority = 0)]
+	static void Init()
+	{
+		ShowPopupExample window = ScriptableObject.CreateInstance<ShowPopupExample>();
+		window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 150);
+		window.ShowPopup();
+	}
+
+	void OnGUI()
+	{
+		string widthText = "265";
+		string heightText = "300";
+		EditorGUILayout.BeginVertical();
+		EditorGUILayout.LabelField(string.Format("Building new artwork {0}", Selection.activeObject.name), EditorStyles.wordWrappedLabel);
+		widthText = EditorGUILayout.TextField("Width in mm", widthText);
+		heightText = EditorGUILayout.TextField("Height in mm", heightText);
+		if (GUILayout.Button("Build"))
+		{
+			float width = 0;
+			float height = 0;
+
+			if (float.TryParse(widthText, out width) && float.TryParse(heightText, out height))
+			{
+				ArtworkBuilder.BuildArtwork(width, height);
+			}
+			else
+			{
+				Debug.LogFormat("[ArtworkBuilder] measurements are not numbers");
+			}
+			this.Close();
+		}
+
+		EditorGUILayout.EndVertical();
+	}
+}
+
 public static class ArtworkBuilder
 {
-    private static Vector3 position;
 
-	[MenuItem("Assets / Create / Build Artwork Object", priority = 0)]
-	public static void Test()
+	public static void BuildArtwork(float width, float height)
 	{
 		if (Selection.activeObject is Texture)
 		{
 			Texture tex = Selection.activeObject as Texture;
-			
+
 
 			if (HasPath(Path.Combine(Application.dataPath, "Prefabs/Artwork")))
 			{
-                AssetDatabase.Refresh();
-                string path = (Path.Combine(Application.dataPath, "Prefabs/Artwork", tex.name +".prefab"));
-                GameObject go = BuildPaintingObject(tex);
-               // ModelExporter.ExportObject(path, go);
-
-               // path = AssetDatabase.GenerateUniqueAssetPath(path);
-
-               // PrefabUtility.SaveAsPrefabAssetAndConnect(go, path, InteractionMode.UserAction);
 				AssetDatabase.Refresh();
-                Debug.LogFormat("[ArtworkBuilder] Asset created: {0}", tex.name);
-            }
+				//string path = (Path.Combine(Application.dataPath, "Prefabs/Artwork", tex.name + ".prefab"));
+				GameObject go = BuildPaintingObject(tex, width, height);
+				// ModelExporter.ExportObject(path, go);
+
+				// path = AssetDatabase.GenerateUniqueAssetPath(path);
+
+				// PrefabUtility.SaveAsPrefabAssetAndConnect(go, path, InteractionMode.UserAction);
+				AssetDatabase.Refresh();
+				Debug.LogFormat("[ArtworkBuilder] Asset created: {0}", tex.name);
+			}
 		}
 		else
 		{
@@ -42,66 +78,66 @@ public static class ArtworkBuilder
 
 	}
 
-	private static GameObject BuildPaintingObject(Texture tex)
+	private static GameObject BuildPaintingObject(Texture tex, float width, float height)
 	{
-        GameObject gameObject = new GameObject(tex.name);
-        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        Material mat = new Material(Shader.Find("Standard"));
-        mat.mainTexture = tex;
-        meshRenderer.sharedMaterial = mat;
+		GameObject gameObject = new GameObject(tex.name);
+		MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+		Material mat = new Material(Shader.Find("Standard"));
+		mat.mainTexture = tex;
+		meshRenderer.sharedMaterial = mat;
 
-        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
+		MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
 
-        Mesh mesh = new Mesh();
+		Mesh mesh = new Mesh();
 
-        Vector3[] vertices = new Vector3[4]
-        {
-            new Vector3(0, 0, 0),
-            new Vector3(tex.width/1000f, 0, 0),
-            new Vector3(0, tex.height/1000f, 0),
-            new Vector3(tex.width/1000f, tex.height/1000f, 0)
-        };
-        mesh.vertices = vertices;
+		Vector3[] vertices = new Vector3[4]
+		{
+			new Vector3(0, 0, 0),
+			new Vector3(width/1000f, 0, 0),
+			new Vector3(0, height/1000f, 0),
+			new Vector3(width/1000f, height/1000f, 0)
+		};
+		mesh.vertices = vertices;
 
-        int[] tris = new int[6]
-        {
+		int[] tris = new int[6]
+		{
             // lower left triangle
             0, 2, 1,
             // upper right triangle
             2, 3, 1
-        };
-        mesh.triangles = tris;
+		};
+		mesh.triangles = tris;
 
-        Vector3[] normals = new Vector3[4]
-        {
-            -Vector3.forward,
-            -Vector3.forward,
-            -Vector3.forward,
-            -Vector3.forward
-        };
-        mesh.normals = normals;
+		Vector3[] normals = new Vector3[4]
+		{
+			-Vector3.forward,
+			-Vector3.forward,
+			-Vector3.forward,
+			-Vector3.forward
+		};
+		mesh.normals = normals;
 
-        Vector2[] uv = new Vector2[4]
-        {
-            new Vector2(0, 0),
-            new Vector2(1, 0),
-            new Vector2(0, 1),
-            new Vector2(1, 1)
-        };
-        mesh.uv = uv;
+		Vector2[] uv = new Vector2[4]
+		{
+			new Vector2(0, 0),
+			new Vector2(1, 0),
+			new Vector2(0, 1),
+			new Vector2(1, 1)
+		};
+		mesh.uv = uv;
 
-        meshFilter.mesh = mesh;
+		meshFilter.mesh = mesh;
 
-        BoxCollider collider = gameObject.AddComponent<BoxCollider>();
-        collider.size = new Vector3(collider.size.x, collider.size.y, collider.size.x/10f);
-        ArtworkClickable artworkClickable = gameObject.AddComponent<ArtworkClickable>();
-        artworkClickable.Key = tex.name;
+		BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+		collider.size = new Vector3(collider.size.x, collider.size.y, collider.size.x / 10f);
+		ArtworkClickable artworkClickable = gameObject.AddComponent<ArtworkClickable>();
+		artworkClickable.Key = tex.name;
 
-        ArtworkData artworkData = Resources.LoadAll<ArtworkData>("").FirstOrDefault();
-        artworkData.AddArtwork(tex.name);
-       
-        return gameObject;
-    }
+		ArtworkData artworkData = Resources.LoadAll<ArtworkData>("").FirstOrDefault();
+		artworkData.AddArtwork(tex.name);
+
+		return gameObject;
+	}
 
 	private static bool HasPath(string path)
 	{

@@ -23,20 +23,20 @@ public class FirstPersonController : MonoBehaviour
 
 	private void Translate(float direction, float magnitude)
 	{
-		rigidbody.AddRelativeForce(new Vector3(0f, 0f, _translationSpeed * direction * magnitude), ForceMode.Acceleration);
+		rigidbody.velocity = this.transform.forward * _translationSpeed * direction * magnitude * Time.fixedDeltaTime;
 	}
 
 	private void Rotate(float direction, float magnitude)
 	{
-		rigidbody.AddRelativeTorque(new Vector3(0f, _rotationSpeed * direction * magnitude, 0f), ForceMode.Acceleration);
+		rigidbody.angularVelocity = new Vector3(0f, _rotationSpeed * direction * magnitude * Time.fixedDeltaTime, 0f);
 	}
 
 	private void Tap(Vector2 position)
 	{
 		Ray cameraRay = _viewCamera.ScreenPointToRay(position);
-		
+
 		RaycastHit rayCastHit;
-		if (Physics.Raycast(cameraRay,out rayCastHit))
+		if (Physics.Raycast(cameraRay, out rayCastHit))
 		{
 			//Debug.Log("Hit :" + rayCastHit.collider.gameObject.name);
 			InputController.Instance.Hit(rayCastHit.collider.gameObject);
