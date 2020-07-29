@@ -19,6 +19,12 @@ public class VideoController
 		}
 	}
 
+	private List<BackgroundVideoPlayer> _backgroundVideoPlayers = new List<BackgroundVideoPlayer>();
+	internal void RegisterBackgroundPlayer(BackgroundVideoPlayer backgroundVideoPlayer)
+	{
+		_backgroundVideoPlayers.Add(backgroundVideoPlayer);
+	}
+
 	public bool IsPlaying => _manager.IsPlaying;
 
 	private VideoManager _manager;
@@ -29,7 +35,6 @@ public class VideoController
 	public void RegisterManager(VideoManager manager)
 	{
 		_manager = manager;
-		
 	}
 
 	public void Init()
@@ -39,8 +44,12 @@ public class VideoController
 		GlitchController.Instance.SubscribeToGlitchIntensityChange(GlitchIntensityChange);
 		GlitchController.Instance.SubscribeToGlitch(Glitch);
 		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
-		
-}
+
+		for (int i = 0; i < _backgroundVideoPlayers.Count; i++)
+		{
+			_backgroundVideoPlayers[i].LoadVideo(_videoData.GetVideoPath(_shortsKey));
+		}
+	}
 
 	public void SubscribeToVideoComplete(Action action)
 	{

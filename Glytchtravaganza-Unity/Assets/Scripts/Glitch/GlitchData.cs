@@ -16,6 +16,7 @@ public class GlitchSettings
 	public float ScreenGlitchDuration = 0.3f;
 	public float ObjectGlitchDuration = 10f;
 	public int GlitchObjectCount = 5;
+	public bool ReverseNormals = false;
 	public string SoundKey;
 	public bool PlayVideo;
 	public string[] VideoKeys;

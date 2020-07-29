@@ -125,11 +125,13 @@ public class GameObjectGlitch : MonoBehaviour
 		}
 		//}
 
-		//if (Random.Range(0, 2) <= 0)
-		//{
-		//	ReverseNormals();
-		//}
-
+		if (GlitchController.Instance.Settings.ReverseNormals)
+		{
+			if (Random.Range(0, 2) <= 0)
+			{
+				ReverseNormals();
+			}
+		}
 		IsGLitched = true;
 	}
 
