@@ -17,7 +17,7 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 	[SerializeField]
 	private CanvasGroup _canvasGroup;
 
-	private void Start()
+	private void Awake()
 	{
 		ArtworkController.Instance.SubscribeToOpenGallery(GalleryOpen);
 		ArtworkController.Instance.SubscribeToCloseGallery(GalleryClose);

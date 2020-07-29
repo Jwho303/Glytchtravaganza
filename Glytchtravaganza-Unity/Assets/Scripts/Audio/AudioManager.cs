@@ -34,7 +34,7 @@ public class AudioManager : MonoBehaviour
 		PlayAmbientSounds();
 	}
 
-	public void Update()
+	public void LateUpdate()
 	{
 		if (!_pause)
 		{
@@ -44,10 +44,17 @@ public class AudioManager : MonoBehaviour
 
 	private void PlayAmbientSounds()
 	{
-		if (!IsPlaying(GlitchController.Instance.Settings.SoundKey))
+		if (string.IsNullOrEmpty(GlitchController.Instance.Settings.SoundKey))
 		{
 			StopAllPlayers();
-			PlayClip(GlitchController.Instance.Settings.SoundKey);
+		}
+		else
+		{
+			if (!IsPlaying(GlitchController.Instance.Settings.SoundKey))
+			{
+				StopAllPlayers();
+				PlayClip(GlitchController.Instance.Settings.SoundKey);
+			}
 		}
 	}
 

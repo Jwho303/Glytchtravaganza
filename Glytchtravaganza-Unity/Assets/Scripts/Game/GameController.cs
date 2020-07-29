@@ -18,7 +18,7 @@ public class GameController
 			return instance;
 		}
 	}
-	private int _artworkOpenCount = 0;
+	private int _artworkOpenCount = -1;
 
 	private GameManager _gameManager;
 	public void RegisterManager(GameManager manager)
@@ -31,14 +31,10 @@ public class GameController
 		InputController.Instance.SubscribeToGameObjectHit(Hit);
 		ArtworkController.Instance.SubscribeToOpenGallery(GalleryOpen);
 		ArtworkController.Instance.SubscribeToCloseGallery(GalleryClose);
+		VideoController.Instance.SubscribeToVideoComplete(VideoComplete);
 	}
 
 	private void GalleryClose()
-	{
-
-	}
-
-	private void GalleryOpen(Artwork obj)
 	{
 		_artworkOpenCount++;
 
@@ -59,6 +55,23 @@ public class GameController
 
 		if (_artworkOpenCount >= 8 && GlitchController.Instance.GlitchIntensity == GlitchIntensity.High)
 		{
+			_artworkOpenCount = 10;
+			GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.Payoff);
+			GlitchController.Instance.RandomGlitch();
+		}
+	}
+
+	private void GalleryOpen(Artwork obj)
+	{
+
+	}
+
+	private void VideoComplete()
+	{
+		Debug.Log("VIDEO COMPLETED!");
+
+		if (GlitchController.Instance.GlitchIntensity == GlitchIntensity.Payoff)
+		{
 			_artworkOpenCount = 0;
 			GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.None);
 		}
@@ -66,7 +79,6 @@ public class GameController
 
 	private void Hit(GameObject gameObject)
 	{
-		Debug.Log("Hit : " + gameObject.name);
 		if (HasComponent<ArtworkClickable>(gameObject))
 		{
 			ArtworkController.Instance.ArtworkSelected(gameObject.GetComponent<ArtworkClickable>());

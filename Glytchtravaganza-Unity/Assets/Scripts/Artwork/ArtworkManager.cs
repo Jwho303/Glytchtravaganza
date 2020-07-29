@@ -21,6 +21,9 @@ public class ArtworkManager : MonoBehaviour, IPointerClickHandler
 	[SerializeField]
 	private CanvasGroup _canvasGroup;
 
+	[SerializeField]
+	private CanvasGroup _arrowsCanvasGroup;
+
 	private Vector2 _offscreenRight
 	{
 		get
@@ -39,9 +42,9 @@ public class ArtworkManager : MonoBehaviour, IPointerClickHandler
 	void Start()
 	{
 		ArtworkController.Instance.RegisterManager(this);
-		_canvasGroup.alpha = 0f;
-		_canvasGroup.interactable = false;
-		_canvasGroup.blocksRaycasts = false;
+		ArtworkController.Instance.SubscribeToCloseGallery(Close);
+		Close();
+		ArtworkController.Instance.OpenArtWork("Tutorial");
 	}
 
 	internal void ArtworkSelected(Artwork artwork)
@@ -55,6 +58,19 @@ public class ArtworkManager : MonoBehaviour, IPointerClickHandler
 
 	internal void BuildGallery(Artwork artwork)
 	{
+		if (artwork.ArtContents.Count <= 1)
+		{
+			_arrowsCanvasGroup.alpha = 0f;
+			_arrowsCanvasGroup.interactable = false;
+			_arrowsCanvasGroup.blocksRaycasts = false;
+		}
+		else
+		{
+			_arrowsCanvasGroup.alpha = 1f;
+			_arrowsCanvasGroup.interactable = true;
+			_arrowsCanvasGroup.blocksRaycasts = true;
+		}
+
 		ClearGallery();
 		for (int i = 0; i < artwork.ArtContents.Count; i++)
 		{
@@ -98,6 +114,11 @@ public class ArtworkManager : MonoBehaviour, IPointerClickHandler
 	public void CloseGallery()
 	{
 		ArtworkController.Instance.ArtworkClosed();
+
+	}
+
+	public void Close()
+	{
 		_canvasGroup.alpha = 0f;
 		_canvasGroup.interactable = false;
 		_canvasGroup.blocksRaycasts = false;

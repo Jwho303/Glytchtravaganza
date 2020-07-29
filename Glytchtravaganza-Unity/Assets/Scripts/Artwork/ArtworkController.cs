@@ -37,6 +37,13 @@ public class ArtworkController
 		_artworkManager = manager;
 	}
 
+	internal void OpenArtWork(string key)
+	{
+		_artworkManager.ArtworkSelected(_artworkData.Get(key));
+		_galleryOpenSubscription(_artworkData.Get(key));
+		IsOpen = true;
+	}
+
 	public void SubscribeToOpenGallery(Action<Artwork> action)
 	{
 		_galleryOpenSubscription += action;

@@ -8,7 +8,8 @@ public enum GlitchIntensity
 	None = 0,
 	Low = 1,
 	Medium = 2,
-	High = 3
+	High = 3,
+	Payoff = 4
 }
 
 public class GlitchController
@@ -63,7 +64,7 @@ public class GlitchController
 
 	public bool CanGlitch()
 	{
-		return _glitchManager.CanGlitch() && GlitchIntensity != GlitchIntensity.None && !ArtworkController.Instance.IsOpen;
+		return _glitchManager.CanGlitch() && GlitchIntensity != GlitchIntensity.None && GlitchIntensity != GlitchIntensity.Payoff && !ArtworkController.Instance.IsOpen && !VideoController.Instance.IsPlaying;
 	}
 
 	internal void Init()

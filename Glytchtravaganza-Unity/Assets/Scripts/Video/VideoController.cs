@@ -19,21 +19,37 @@ public class VideoController
 		}
 	}
 
+	public bool IsPlaying => _manager.IsPlaying;
+
 	private VideoManager _manager;
 	private VideoData _videoData;
+	private Action _videoCompleteSubscription = delegate { };
 
 	private string _shortsKey = "Shorts";
 	public void RegisterManager(VideoManager manager)
 	{
 		_manager = manager;
+		
 	}
 
 	public void Init()
 	{
 		_videoData = Resources.LoadAll<VideoData>("").FirstOrDefault();
+		_manager.LoadVideo(_videoData.GetVideoPath(_shortsKey));
 		GlitchController.Instance.SubscribeToGlitchIntensityChange(GlitchIntensityChange);
 		GlitchController.Instance.SubscribeToGlitch(Glitch);
 		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
+		
+}
+
+	public void SubscribeToVideoComplete(Action action)
+	{
+		_videoCompleteSubscription += action;
+	}
+
+	internal void VideoComplete()
+	{
+		_videoCompleteSubscription();
 	}
 
 	private void OpenArtWork(Artwork obj)
@@ -59,12 +75,12 @@ public class VideoController
 
 	public void PlayVideo(string key)
 	{
-		_manager.PlayVideo(_videoData.GetVideoURL(key));
+		_manager.PlayVideo();
 	}
 
 	public void PlayVideo(string key, float duration, bool jumpStart)
 	{
-		_manager.PlayVideo(_videoData.GetVideoURL(key), duration, jumpStart);
+		_manager.PlayVideo(duration, jumpStart);
 	}
 
 	public void PlayVideo(GlitchSettings settings)

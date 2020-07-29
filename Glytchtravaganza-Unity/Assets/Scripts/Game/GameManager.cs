@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
 	void Start()
 	{
 		ArtworkController.Instance.Init();
+
 		AudioController.Instance.Init();
 		GlitchController = GlitchController.Instance;
 		GlitchController.Init();
