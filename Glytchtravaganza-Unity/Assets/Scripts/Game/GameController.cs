@@ -18,7 +18,7 @@ public class GameController
 			return instance;
 		}
 	}
-	private int _artworkOpenCount = -1;
+	public int ArtworkOpenCount { get; private set; } = -1;
 
 	private GameManager _gameManager;
 	public void RegisterManager(GameManager manager)
@@ -36,34 +36,34 @@ public class GameController
 
 	private void GalleryClose()
 	{
-		_artworkOpenCount++;
+		_gameManager.ResumeUpdate();
+		ArtworkCount();
+	}
 
-		if (_artworkOpenCount >= 2 && GlitchController.Instance.GlitchIntensity == GlitchIntensity.None)
-		{
-			GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.Low);
-		}
+	private void ArtworkCount()
+	{
+		ArtworkOpenCount++;
+		ArtworkTriggerCheck();
 
-		if (_artworkOpenCount >= 4 && GlitchController.Instance.GlitchIntensity == GlitchIntensity.Low)
-		{
-			GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.Medium);
-		}
+	}
 
-		if (_artworkOpenCount >= 6 && GlitchController.Instance.GlitchIntensity == GlitchIntensity.Medium)
+	private void ArtworkTriggerCheck()
+	{
+		if (ArtworkOpenCount >= GlitchController.Instance.Settings.ArtClickRequired && GlitchController.Instance.Settings.ArtClickRequired > -1)
 		{
-			GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.High);
-		}
-
-		if (_artworkOpenCount >= 8 && GlitchController.Instance.GlitchIntensity == GlitchIntensity.High)
-		{
-			_artworkOpenCount = 10;
-			GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.Payoff);
-			GlitchController.Instance.RandomGlitch();
+			GlitchController.Instance.IncreaseIntensity();
+			_gameManager.ResetIntensityTimer();
 		}
 	}
 
 	private void GalleryOpen(Artwork obj)
 	{
+		_gameManager.PauseUpdate();
+	}
 
+	internal void IntensityTimeOut()
+	{
+		GlitchController.Instance.IncreaseIntensity();
 	}
 
 	private void VideoComplete()
@@ -72,7 +72,7 @@ public class GameController
 
 		if (GlitchController.Instance.GlitchIntensity == GlitchIntensity.Payoff)
 		{
-			_artworkOpenCount = 0;
+			ArtworkOpenCount = 0;
 			GlitchController.Instance.SetGlitchIntensity(GlitchIntensity.None);
 		}
 	}

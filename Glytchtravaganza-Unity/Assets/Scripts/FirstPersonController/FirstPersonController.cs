@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,11 +15,44 @@ public class FirstPersonController : MonoBehaviour
 	[SerializeField]
 	private Rigidbody rigidbody;
 
+	private bool _facingArtwork = true;
+
 	private void Start()
 	{
 		InputController.Instance.SubscribeToTranslate(Translate);
 		InputController.Instance.SubscribeToRotation(Rotate);
 		InputController.Instance.SubscribeToTap(Tap);
+	}
+
+	private void Update()
+	{
+		Ray cameraRay = _viewCamera.ScreenPointToRay(new Vector2(Screen.width/2f,Screen.height/2f));
+
+		RaycastHit rayCastHit;
+		if (Physics.Raycast(cameraRay, out rayCastHit))
+		{
+			ArtworkClickable artwork = rayCastHit.collider.gameObject.GetComponent<ArtworkClickable>();
+			if (artwork != null && !_facingArtwork)
+			{
+				HitArtwork(artwork);
+			}
+			else if (artwork == null && _facingArtwork)
+			{
+				MissedArtwork();
+			}
+		}
+	}
+
+	private void MissedArtwork()
+	{
+		InputController.Instance.MissedArtwork();
+		_facingArtwork = false;
+	}
+
+	private void HitArtwork(ArtworkClickable artwork)
+	{
+		InputController.Instance.HitArtwork(artwork);
+		_facingArtwork = true;
 	}
 
 	private void Translate(float direction, float magnitude)

@@ -29,11 +29,29 @@ public class GlitchManager : MonoBehaviour
 
 	private void DigitalScreenGlitch(float value)
 	{
+		if (value == 0f && digitalGlitch.enabled)
+		{
+			digitalGlitch.enabled = false;
+		}
+		else if (value != 0f && !digitalGlitch.enabled)
+		{
+			digitalGlitch.enabled = true;
+		}
+
 		digitalGlitch.intensity = Mathf.Lerp(0f, 0.1f, value);
 	}
 
 	private void AnalogueScreenGlitch(float value)
 	{
+		if (value == 0f && analogGlitch.enabled)
+		{
+			analogGlitch.enabled = false;
+		}
+		else if (value != 0f && !analogGlitch.enabled)
+		{
+			analogGlitch.enabled = true;
+		}
+
 		analogGlitch.scanLineJitter = Mathf.Lerp(0f, 0.75f, value);
 		analogGlitch.colorDrift = Mathf.Lerp(0f, 0.5f, value);
 	}
@@ -79,6 +97,8 @@ public class GlitchManager : MonoBehaviour
 	{
 		GlitchController.Instance.RegisterManager(this);
 		_glitchObjects = FindObjectsOfType<GameObjectGlitch>().ToList();
+		DigitalScreenGlitch(0f);
+		AnalogueScreenGlitch(0f);
 	}
 
 	public bool CanGlitch()

@@ -64,7 +64,7 @@ public class GlitchController
 
 	public bool CanGlitch()
 	{
-		return _glitchManager.CanGlitch() && GlitchIntensity != GlitchIntensity.None && GlitchIntensity != GlitchIntensity.Payoff && !ArtworkController.Instance.IsOpen && !VideoController.Instance.IsPlaying;
+		return _glitchManager.CanGlitch() && GlitchIntensity != GlitchIntensity.None && GlitchIntensity != GlitchIntensity.Payoff && !ArtworkController.Instance.IsOpen && !VideoController.Instance.IsPlaying && Settings.GlitchFrequency > 0;
 	}
 
 	internal void Init()
@@ -82,6 +82,30 @@ public class GlitchController
 	{
 		_glitchManager.RandomGlitch(GlitchIntensity);
 		_glitchSubscription(GlitchIntensity);
+	}
+
+	internal void IncreaseIntensity()
+	{
+		switch (GlitchIntensity)
+		{
+			case GlitchIntensity.None:
+				SetGlitchIntensity(GlitchIntensity.Low);
+				break;
+			case GlitchIntensity.Low:
+				SetGlitchIntensity(GlitchIntensity.Medium);
+				break;
+			case GlitchIntensity.Medium:
+				SetGlitchIntensity(GlitchIntensity.High);
+				break;
+			case GlitchIntensity.High:
+				SetGlitchIntensity(GlitchIntensity.Payoff);
+				RandomGlitch();
+				break;
+			case GlitchIntensity.Payoff:
+				SetGlitchIntensity(GlitchIntensity.None);
+				break;
+		}
+		
 	}
 }
 

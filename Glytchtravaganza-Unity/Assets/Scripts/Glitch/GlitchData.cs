@@ -12,6 +12,8 @@ public class GlitchData : ScriptableObject
 public class GlitchSettings
 {
 	public GlitchIntensity GlitchIntensity;
+	public int ArtClickRequired = -1;
+	public float SecondsRequired = -1f;
 	public float GlitchFrequency = 2f;
 	public float ScreenGlitchDuration = 0.3f;
 	public float ObjectGlitchDuration = 10f;

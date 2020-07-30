@@ -17,26 +17,42 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 	[SerializeField]
 	private CanvasGroup _canvasGroup;
 
+	[SerializeField]
+	private CanvasGroup _interactionCanvasGroup;
+
+	private ArtworkClickable _selectedClickable = null;
+
 	private void Awake()
 	{
 		ArtworkController.Instance.SubscribeToOpenGallery(GalleryOpen);
 		ArtworkController.Instance.SubscribeToCloseGallery(GalleryClose);
 
+		InputController.Instance.SubscribeToArtworkMissed(HideInteractionButton);
+		InputController.Instance.SubscribeToArtworkHit(ShowInteractionButton);
+
 		GalleryClose();
+	}
+
+	private void ShowInteractionButton(ArtworkClickable obj)
+	{
+		UIHelper.TurnOnCanvas(_interactionCanvasGroup);
+		_selectedClickable = obj;
+	}
+
+	private void HideInteractionButton()
+	{
+		UIHelper.TurnOffCanvas(_interactionCanvasGroup);
+		_selectedClickable = null;
 	}
 
 	private void GalleryClose()
 	{
-		_canvasGroup.alpha = 1f;
-		_canvasGroup.interactable = true;
-		_canvasGroup.blocksRaycasts = true;
+		UIHelper.TurnOnCanvas(_canvasGroup);
 	}
 
 	private void GalleryOpen(Artwork artwork)
 	{
-		_canvasGroup.alpha = 0f;
-		_canvasGroup.interactable = false;
-		_canvasGroup.blocksRaycasts = false;
+		UIHelper.TurnOffCanvas(_canvasGroup);
 	}
 
 	public void FixedUpdate()
@@ -158,5 +174,13 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 	{
 		_keyDown = false;
 		ClearData();
+	}
+
+	public void Interaction()
+	{
+		if (_selectedClickable != null)
+		{
+			ArtworkController.Instance.ArtworkSelected(_selectedClickable);
+		}
 	}
 }
