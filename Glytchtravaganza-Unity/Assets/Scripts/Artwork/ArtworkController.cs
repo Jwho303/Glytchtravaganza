@@ -67,4 +67,14 @@ public class ArtworkController
 		IsOpen = false;
 	}
 
+	public void NextItem()
+	{
+		_artworkManager.NextItem();
+	}
+
+	public void PreviousItem()
+	{
+		_artworkManager.PreviousItem();
+	}
+
 }

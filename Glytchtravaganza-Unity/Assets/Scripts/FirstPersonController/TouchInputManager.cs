@@ -57,27 +57,51 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	public void FixedUpdate()
 	{
-		CheckKeyPresses();
-
-		if (_isDragging || _keyDown)
+		if (ArtworkController.Instance.IsOpen)
 		{
-			InputController.Instance.Translate(_direction.y, _magnitude.y);
-			InputController.Instance.Rotate(_direction.x, _magnitude.x);
+			GalleryControls();
 		}
+		else
+		{
+			CheckKeyPresses();
+
+			if (_isDragging || _keyDown)
+			{
+				InputController.Instance.Translate(_direction.y, _magnitude.y);
+				InputController.Instance.Rotate(_direction.x, _magnitude.x);
+			}
+		}
+	}
+
+	private void GalleryControls()
+	{
+		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown("Fire1"))
+		{
+			ArtworkController.Instance.ArtworkClosed();
+		}
+
+		if (Input.GetAxis("Horizontal") > 0.5f && !_keyDown)
+		{
+			ArtworkController.Instance.NextItem();
+			KeyDown();
+		}
+		else if (Input.GetAxis("Horizontal") < -0.5f && !_keyDown)
+		{
+			ArtworkController.Instance.PreviousItem();
+			KeyDown();
+		}
+		else if (Input.GetAxis("Horizontal") > -0.5f && Input.GetAxis("Horizontal") < 0.5f && _keyDown)
+		{
+			KeyUp();
+		}
+
 	}
 
 	private void CheckKeyPresses()
 	{
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			if (ArtworkController.Instance.IsOpen)
-			{
-				ArtworkController.Instance.ArtworkClosed();
-			}
-			else
-			{
-				Application.Quit();
-			}
+			Application.Quit();
 		}
 
 		if (_keyDown && !Input.anyKey)
@@ -92,6 +116,11 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 			//Debug.LogFormat("[{0}] Key Down", this.name);
 			_direction = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 			_magnitude = Vector2.one;
+		}
+
+		if (Input.GetButtonDown("Fire1"))
+		{
+			Interaction();
 		}
 	}
 
