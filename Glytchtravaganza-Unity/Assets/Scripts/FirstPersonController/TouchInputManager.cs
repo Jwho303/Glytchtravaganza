@@ -48,11 +48,13 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 	private void GalleryClose()
 	{
 		UIHelper.TurnOnCanvas(_canvasGroup);
+		KeyUp();
 	}
 
 	private void GalleryOpen(Artwork artwork)
 	{
 		UIHelper.TurnOffCanvas(_canvasGroup);
+		KeyUp();
 	}
 
 	public void FixedUpdate()
