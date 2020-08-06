@@ -23,13 +23,12 @@ public class GameManager : MonoBehaviour
 	{
 		GameController.Instance.RegisterManager(this);
 		GameController.Instance.Init();
+		ArtworkController.Instance.Init();
 	}
 
 
 	void Start()
 	{
-		ArtworkController.Instance.Init();
-
 		AudioController.Instance.Init();
 		GlitchController = GlitchController.Instance;
 		GlitchController.Init();

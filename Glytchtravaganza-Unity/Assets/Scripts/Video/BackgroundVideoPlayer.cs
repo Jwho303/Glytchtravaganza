@@ -9,6 +9,19 @@ public class BackgroundVideoPlayer : MonoBehaviour
 	private VideoPlayer _videoPlayer;
 
 	private VideoPath _videoPath;
+	private bool _isDefaultPlayer = false;
+	public Material Material
+	{
+		get
+		{
+			return GetComponent<MeshRenderer>().sharedMaterial;
+		}
+		set
+		{
+			GetComponent<MeshRenderer>().sharedMaterial = value;
+
+		}
+	}
 
 	void Awake()
 	{
@@ -30,18 +43,28 @@ public class BackgroundVideoPlayer : MonoBehaviour
 		_videoPlayer.Prepare();
 		_videoPlayer.audioOutputMode = VideoAudioOutputMode.None;
 		_videoPlayer.isLooping = true;
-		Material material = new Material(Shader.Find("Unlit/Texture"));
-		GetComponent<MeshRenderer>().sharedMaterial = material;
+
 		Debug.Log("Load video");
+		_isDefaultPlayer = true;
+	}
+
+	public void Slave()
+	{
+		_isDefaultPlayer = false;
+		GameObject.Destroy(this._videoPlayer);
+		_videoPlayer = null;
 	}
 
 	private void Update()
 	{
-		if (_videoPlayer.isPlaying)
+		if (_isDefaultPlayer)
 		{
-			if (_videoPlayer.time > _videoPath.JumpEndTime)
+			if (_videoPlayer.isPlaying)
 			{
-				_videoPlayer.time = _videoPath.JumpStartTime;
+				if (_videoPlayer.time > _videoPath.JumpEndTime)
+				{
+					_videoPlayer.time = _videoPath.JumpStartTime;
+				}
 			}
 		}
 	}

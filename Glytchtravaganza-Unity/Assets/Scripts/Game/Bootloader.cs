@@ -13,6 +13,7 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 	private float _shutDownTimer = 0f;
 	private float _shutDownTime = 5f;
 	private int _targetFramerate = 60;
+	private int _shutdownFramerate = 15;
 	private bool _hasFailed = false;
 	[SerializeField]
 	private Camera _camera;
@@ -23,13 +24,14 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 	// Start is called before the first frame update
 	void Awake()
 	{
-#if UNITY_EDITOR
-		Desktop();
-#elif UNITY_WEBGL
+		Debug.LogFormat("[{0}] Starting Bootloader", this.name);
+#if UNITY_WEBGL
+
 		WebBrowser();
 #else
 		Desktop();
 #endif
+		//Application.targetFrameRate = 0;
 		SceneManager.sceneLoaded += SceneLoaded;
 		SceneManager.LoadScene("Main", LoadSceneMode.Additive);
 		UIHelper.TurnOffCanvas(_canvasGroup);
@@ -42,13 +44,14 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 
 	private void WebBrowser()
 	{
-		Application.targetFrameRate = _targetFramerate;
-
+		Application.targetFrameRate = -1;
+		Debug.LogFormat("[{0}] Set framerate for webgl to {1}", this.name, Application.targetFrameRate);
 	}
 
 	private void Desktop()
 	{
 		Application.targetFrameRate = _targetFramerate;
+		Debug.LogFormat("[{0}] Set framerate for desktop to {1}", this.name, Application.targetFrameRate);
 	}
 
 	public void OnPointerClick(PointerEventData eventData)
@@ -56,14 +59,14 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 		if (_hasFailed)
 		{
 			Debug.Log("Clicking");
-				int linkIndex = TMP_TextUtilities.FindIntersectingLink(_textmeshPro, Input.mousePosition, _camera);
-				if (linkIndex != -1)
-				{ // was a link clicked?
-					TMP_LinkInfo linkInfo = _textmeshPro.textInfo.linkInfo[linkIndex];
+			int linkIndex = TMP_TextUtilities.FindIntersectingLink(_textmeshPro, Input.mousePosition, _camera);
+			if (linkIndex != -1)
+			{ // was a link clicked?
+				TMP_LinkInfo linkInfo = _textmeshPro.textInfo.linkInfo[linkIndex];
 
-					// open the link id as a url, which is the metadata we added in the text field
-					Application.OpenURL(linkInfo.GetLinkID());
-				}
+				// open the link id as a url, which is the metadata we added in the text field
+				Application.OpenURL(linkInfo.GetLinkID());
+			}
 
 		}
 	}
@@ -71,24 +74,17 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 	// Update is called once per frame
 	void Update()
 	{
-		if (Mathf.RoundToInt(1f / Time.deltaTime) < (_targetFramerate - 10))
+		float framerate = Mathf.RoundToInt(1f / Time.deltaTime);
+
+		if (framerate < _shutdownFramerate)
 		{
 
 			if (_shutDownTimer > _shutDownTime)
 			{
 
-				if (_targetFramerate == 60)
+				if (SceneManager.GetActiveScene() != this.gameObject.scene)
 				{
-					_shutDownTimer = 0;
-					_targetFramerate = 30;
-					Application.targetFrameRate = -1;
-				}
-				else
-				{
-					if (SceneManager.GetActiveScene() != this.gameObject.scene)
-					{
-						StopGame();
-					}
+					StopGame();
 				}
 			}
 			else
@@ -100,6 +96,14 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 		{
 			_shutDownTimer = 0f;
 
+		}
+
+		if (_hasFailed)
+		{
+			if (Input.GetKeyDown(KeyCode.Escape))
+			{
+				Application.Quit();
+			}
 		}
 	}
 

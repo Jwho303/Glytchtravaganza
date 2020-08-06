@@ -45,9 +45,11 @@ public class VideoController
 		GlitchController.Instance.SubscribeToGlitch(Glitch);
 		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
 
-		for (int i = 0; i < _backgroundVideoPlayers.Count; i++)
+		_backgroundVideoPlayers[0].LoadVideo(_videoData.GetVideoPath(_shortsKey));
+
+		for (int i = 1; i < _backgroundVideoPlayers.Count; i++)
 		{
-			_backgroundVideoPlayers[i].LoadVideo(_videoData.GetVideoPath(_shortsKey));
+			_backgroundVideoPlayers[i].Slave();
 		}
 	}
 

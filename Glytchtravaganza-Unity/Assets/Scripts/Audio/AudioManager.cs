@@ -130,6 +130,7 @@ public class AudioPlayer
 			source.playOnAwake = false;
 			source.clip = audioObject.AudioClips[i];
 			source.Stop();
+			source.volume = 0.6f;
 			AudioSources.Add(source);
 		}
 	}
