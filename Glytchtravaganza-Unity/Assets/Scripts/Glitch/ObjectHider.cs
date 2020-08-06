@@ -10,9 +10,9 @@ public class ObjectHider : GlitchListener
 
 	public override void Start()
 	{
-		base.Start();
 		_onAction += ShowChild;
 		_offAction += HideChild;
+		base.Start();
 	}
 
 	private void ShowChild()

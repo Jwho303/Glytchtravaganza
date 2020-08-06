@@ -21,6 +21,10 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 	private TextMeshProUGUI _textmeshPro;
 	[SerializeField]
 	private CanvasGroup _canvasGroup;
+	[SerializeField]
+	private CanvasGroup _errorCanvasGroup;
+	[SerializeField]
+	private CanvasGroup _titleCanvasGroup;
 	// Start is called before the first frame update
 	void Awake()
 	{
@@ -35,6 +39,26 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 		SceneManager.sceneLoaded += SceneLoaded;
 		SceneManager.LoadScene("Main", LoadSceneMode.Additive);
 		UIHelper.TurnOffCanvas(_canvasGroup);
+		UIHelper.TurnOffCanvas(_errorCanvasGroup);
+		UIHelper.TurnOffCanvas(_titleCanvasGroup);
+		_camera.enabled = false;
+		VideoController.Instance.SubscribeToVideoComplete(VideoComplete);
+	}
+
+	private void VideoComplete()
+	{
+		StartCoroutine(ShowTitle());
+	}
+
+	private IEnumerator ShowTitle()
+	{
+		_camera.enabled = true;
+		UIHelper.TurnOnCanvas(_canvasGroup);
+		UIHelper.TurnOnCanvas(_titleCanvasGroup);
+		yield return new WaitForSecondsRealtime(5f);
+		UIHelper.TurnOffCanvas(_canvasGroup);
+		UIHelper.TurnOffCanvas(_titleCanvasGroup);
+		_camera.enabled = false;
 	}
 
 	private void SceneLoaded(Scene arg0, LoadSceneMode arg1)
@@ -100,19 +124,23 @@ public class Bootloader : MonoBehaviour, IPointerClickHandler
 
 		if (_hasFailed)
 		{
+			#if !UNITY_WEBGL
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
 				Application.Quit();
 			}
+			#endif
 		}
 	}
 
 	[ContextMenu("Stop Game")]
 	void StopGame()
 	{
+		_camera.enabled = true;
 		SceneManager.SetActiveScene(this.gameObject.scene);
 		SceneManager.UnloadSceneAsync("Main");
 		_hasFailed = true;
 		UIHelper.TurnOnCanvas(_canvasGroup);
+		UIHelper.TurnOnCanvas(_errorCanvasGroup);
 	}
 }

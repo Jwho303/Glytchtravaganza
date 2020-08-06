@@ -19,6 +19,7 @@ public class GlitchListener : MonoBehaviour
 		GlitchController.Instance.SubscribeToGlitchIntensityChange(GlitchIntensityChange);
 		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
 		ArtworkController.Instance.SubscribeToCloseGallery(CloseArtWork);
+		GlitchIntensityChange(GlitchController.Instance.GlitchIntensity);
 	}
 
 	private void CloseArtWork()

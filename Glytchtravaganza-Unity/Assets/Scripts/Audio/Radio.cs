@@ -19,12 +19,12 @@ public class Radio : GlitchListener
 
 	public override void Start()
 	{
-		base.Start();
 		_onAction += PlaySound;
 		_offAction += StopSound;
 		_openArtworkAction += ArtworkOpened;
 		_closeArtworkAction += ArtworkClosed;
 
+		base.Start();
 		_playIndex = 0;
 		LoadClip(_playIndex);
 	}

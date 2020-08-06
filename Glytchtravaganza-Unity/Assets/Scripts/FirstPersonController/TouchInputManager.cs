@@ -22,6 +22,17 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	private ArtworkClickable _selectedClickable = null;
 
+	[SerializeField]
+	[Range(-1f, 1f)]
+	private float _horizontalAxis = 0f;
+
+	[SerializeField]
+	[Range(-1f, 1f)]
+	private float _verticalAxis = 0f;
+
+	[SerializeField]
+	private bool _fireDown = false;
+
 	private void Awake()
 	{
 		ArtworkController.Instance.SubscribeToOpenGallery(GalleryOpen);
@@ -48,17 +59,19 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 	private void GalleryClose()
 	{
 		UIHelper.TurnOnCanvas(_canvasGroup);
-		KeyUp();
 	}
 
 	private void GalleryOpen(Artwork artwork)
 	{
 		UIHelper.TurnOffCanvas(_canvasGroup);
-		KeyUp();
 	}
 
 	public void FixedUpdate()
 	{
+		_horizontalAxis = Input.GetAxis("Horizontal");
+		_verticalAxis = Input.GetAxis("Vertical");
+		_fireDown = Input.GetButton("Fire1");
+
 		if (ArtworkController.Instance.IsOpen)
 		{
 			GalleryControls();
@@ -77,34 +90,35 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	private void GalleryControls()
 	{
-		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown("Fire1"))
+		if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetButton("Fire1")) && !_keyDown)
 		{
 			ArtworkController.Instance.ArtworkClosed();
+			KeyDown();
 		}
-
-		if (Input.GetAxis("Horizontal") > 0.5f && !_keyDown)
+		else if (Input.GetAxisRaw("Horizontal") > 0.5f && !_keyDown)
 		{
 			ArtworkController.Instance.NextItem();
 			KeyDown();
 		}
-		else if (Input.GetAxis("Horizontal") < -0.5f && !_keyDown)
+		else if (Input.GetAxisRaw("Horizontal") < -0.5f && !_keyDown)
 		{
 			ArtworkController.Instance.PreviousItem();
 			KeyDown();
 		}
-		else if (Input.GetAxis("Horizontal") > -0.5f && Input.GetAxis("Horizontal") < 0.5f && _keyDown)
+		else if ((Input.GetAxisRaw("Horizontal") > -0.5f && Input.GetAxisRaw("Horizontal") < 0.5f && _keyDown) && (!Input.GetButton("Fire1") && _keyDown))
 		{
 			KeyUp();
 		}
-
 	}
 
 	private void CheckKeyPresses()
 	{
+#if !UNITY_WEBGL
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			Application.Quit();
 		}
+#endif
 
 		if (_keyDown && !Input.anyKey)
 		{
@@ -120,7 +134,7 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 			_magnitude = Vector2.one;
 		}
 
-		if (Input.GetButtonDown("Fire1"))
+		if (Input.GetButton("Fire1") && !_keyDown)
 		{
 			Interaction();
 		}
@@ -209,6 +223,7 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	public void Interaction()
 	{
+		KeyDown();
 		if (_selectedClickable != null)
 		{
 			ArtworkController.Instance.ArtworkSelected(_selectedClickable);
