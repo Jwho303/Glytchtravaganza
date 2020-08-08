@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae2f21ed4cebe40438bee398aafc957a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _translationSpeed: 20
-  _rotationSpeed: 6
+  _translationSpeed: 100
+  _rotationSpeed: 50
   _viewCamera: {fileID: 2478924672811073861}
   rigidbody: {fileID: 2478924673710897088}
