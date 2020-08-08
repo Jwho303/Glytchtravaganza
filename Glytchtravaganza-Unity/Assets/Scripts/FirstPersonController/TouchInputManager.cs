@@ -68,6 +68,11 @@ public class TouchInputManager : MonoBehaviour, IPointerUpHandler, IBeginDragHan
 
 	public void FixedUpdate()
 	{
+		if (GlitchController.Instance.GlitchIntensity == GlitchIntensity.Payoff)
+		{
+			return;
+		}
+
 		_horizontalAxis = Input.GetAxis("Horizontal");
 		_verticalAxis = Input.GetAxis("Vertical");
 		_fireDown = Input.GetButton("Fire1");
