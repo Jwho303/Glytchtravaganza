@@ -16,12 +16,34 @@ public class FirstPersonController : MonoBehaviour
 	private Rigidbody rigidbody;
 
 	private bool _facingArtwork = true;
+	private Vector3 _spawnPosition;
+	private Quaternion _spawnRotation;
 
 	private void Start()
 	{
 		InputController.Instance.SubscribeToTranslate(Translate);
 		InputController.Instance.SubscribeToRotation(Rotate);
 		InputController.Instance.SubscribeToTap(Tap);
+		_spawnPosition = this.transform.position;
+		_spawnRotation = this.transform.rotation;
+		VideoController.Instance.SubscribeToVideoComplete(Reset);
+
+		Ray cameraRay = _viewCamera.ScreenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
+		RaycastHit rayCastHit;
+		if (Physics.Raycast(cameraRay, out rayCastHit))
+		{
+			ArtworkClickable artwork = rayCastHit.collider.gameObject.GetComponent<ArtworkClickable>();
+			if (artwork != null)
+			{
+				HitArtwork(artwork);
+			}
+		}
+	}
+
+	private void Reset()
+	{
+		this.transform.position = _spawnPosition;
+		this.transform.rotation = _spawnRotation;
 	}
 
 	private void Update()

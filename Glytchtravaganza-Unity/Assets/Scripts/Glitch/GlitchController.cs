@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define Installation
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -69,7 +70,11 @@ public class GlitchController
 
 	internal void Init()
 	{
-		_glitchData = Resources.LoadAll<GlitchData>("").FirstOrDefault();
+#if Installation
+		_glitchData = Resources.Load<GlitchData>("GlitchDataInstallation");
+#else
+		_glitchData = Resources.Load<GlitchData>("GlitchData");
+#endif
 		ArtworkController.Instance.SubscribeToOpenGallery(OpenArtWork);
 	}
 

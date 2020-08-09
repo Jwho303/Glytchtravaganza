@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1703486282655843491}
   - component: {fileID: 1703486282655843488}
-  - component: {fileID: 1703486282655843489}
   m_Layer: 0
   m_Name: Gamemanager
   m_TagString: Untagged
@@ -45,15 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   glitchIntensity: 0
---- !u!114 &1703486282655843489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1703486282655843518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4459903eaf8b914d8a978b8446dabc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _artworksOpened: -1
+  _countingDown: 0
+  _glitchCountDown: -1
+  _IntensityCountDown: -1
