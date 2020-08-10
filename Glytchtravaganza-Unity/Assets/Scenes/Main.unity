@@ -11012,7 +11012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4364201fef414dc4fb7a15f237b0c954, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _onIntensity: 0200000003000000
+  _onIntensity: 03000000
   _childGameObject: {fileID: 502492136}
 --- !u!1001 &1996564172
 PrefabInstance:
